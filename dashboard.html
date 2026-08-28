@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Dashboard - EarnHub</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="dash-nav"><div class="logo">Earn<span>Hub</span></div><button onclick="logout()" class="logout">Logout</button></header>
+<main class="dashboard">
+  <div class="welcome"><div><p class="muted">Welcome back</p><h1 id="userName">User 👋</h1></div><div class="avatar">U</div></div>
+  <section class="balance">
+    <div><p>Available Balance</p><h2>₹<span id="balance">250</span></h2><button class="btn" onclick="alert('Withdrawal module will be connected in Phase 2.')">Withdraw</button></div>
+    <div class="balance-icon">💰</div>
+  </section>
+  <section class="stats-grid">
+    <div class="stat"><span>Today</span><b>₹35</b></div><div class="stat"><span>Task earnings</span><b>₹150</b></div><div class="stat"><span>Referral commission</span><b>₹75</b></div><div class="stat"><span>Ad rewards</span><b>₹25</b></div>
+  </section>
+  <section>
+    <h2>Earn more</h2>
+    <div class="grid cards">
+      <article class="action-card"><div class="icon">📝</div><h3>Tasks</h3><p>5 tasks available</p><button class="btn" onclick="alert('Tasks module coming in Phase 2')">View Tasks</button></article>
+      <article class="action-card"><div class="icon">👥</div><h3>Refer & Earn</h3><p>Earn qualifying commissions</p><div class="ref">ABC123 <button onclick="copyRef()">Copy</button></div></article>
+      <article class="action-card"><div class="icon">📺</div><h3>Ad Rewards</h3><p>Eligible ads & sponsored activities</p><button class="btn" onclick="alert('Ad integration will be added with a compliant ad provider.')">View Ads</button></article>
+    </div>
+  </section>
+  <section class="activity"><h2>Recent activity</h2><div class="activity-row"><span>📝 Task reward</span><b>+₹20</b></div><div class="activity-row"><span>👥 Referral commission</span><b>+₹15</b></div><div class="activity-row"><span>📺 Ad reward</span><b>+₹5</b></div></section>
+</main>
+<script src="script.js"></script></body></html>
