@@ -62,5 +62,52 @@ document.addEventListener("DOMContentLoaded",function(){
     if(user){
       userName.textContent=user.name+" 👋";
     }
+  }function withdraw() {
+    const user = JSON.parse(localStorage.getItem("earnhubUser"));
+
+    if (!user) {
+        alert("Please login first.");
+        return;
+    }
+
+    const amount = Number(prompt("Enter withdrawal amount (₹):"));
+    if (!amount || amount <= 0) {
+        alert("Enter a valid amount.");
+        return;
+    }
+
+    const balance = Number(user.balance || 0);
+
+    if (amount > balance) {
+        alert("Insufficient balance.");
+        return;
+    }
+
+    const upi = prompt("Enter your UPI ID:");
+
+    if (!upi || !upi.includes("@")) {
+        alert("Please enter a valid UPI ID.");
+        return;
+    }
+
+    user.balance = balance - amount;
+
+    localStorage.setItem("earnhubUser", JSON.stringify(user));
+
+    localStorage.setItem("lastWithdrawal", JSON.stringify({
+        amount: amount,
+        upi: upi,
+        status: "Pending",
+        date: new Date().toLocaleString()
+    }));
+
+    alert(
+        "Withdrawal request submitted successfully!\n\n" +
+        "Amount: ₹" + amount +
+        "\nUPI: " + upi +
+        "\nStatus: Pending"
+    );
+
+    location.reload();
   }
 });
