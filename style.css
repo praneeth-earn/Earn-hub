@@ -8,6 +8,9 @@
     padding: 0;
 }
 
+html {
+    scroll-behavior: smooth;
+}
 
 body {
     font-family: Arial, Helvetica, sans-serif;
@@ -16,15 +19,25 @@ body {
     line-height: 1.5;
 }
 
-
 button,
+input,
+textarea,
+select,
 a {
     font-family: inherit;
 }
 
-
 button {
     cursor: pointer;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+a {
+    color: inherit;
 }
 
 
@@ -38,19 +51,40 @@ button {
     color: #18233b;
 }
 
-
 .logo span {
     color: #6255e7;
 }
 
 
 /* ==================================================
-   DASHBOARD NAV
+   GENERAL BUTTON
+   ================================================== */
+
+.btn {
+    border: none;
+    background: #6255e7;
+    color: #ffffff;
+    padding: 11px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.btn:hover {
+    background: #5145d1;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+
+/* ==================================================
+   DASHBOARD NAVIGATION
    ================================================== */
 
 .dash-nav {
     min-height: 70px;
-
     background: #ffffff;
 
     display: flex;
@@ -62,17 +96,8 @@ button {
     border-bottom: 1px solid #e8ebf2;
 }
 
-
-.nav-right {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-
 .logout {
     border: none;
-
     background: #f1f3f8;
     color: #374151;
 
@@ -83,18 +108,19 @@ button {
     font-weight: 600;
 }
 
+.logout:hover {
+    background: #e6e9f0;
+}
 
 .admin-dashboard-link {
     text-decoration: none;
-
     color: #6255e7;
-
     font-weight: 700;
 }
 
 
 /* ==================================================
-   TASK NAV
+   TASK NAVIGATION
    ================================================== */
 
 .task-nav {
@@ -103,9 +129,7 @@ button {
     background: #ffffff;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     padding: 0 20px;
@@ -113,16 +137,13 @@ button {
     border-bottom: 1px solid #e8ebf2;
 
     position: sticky;
-
     top: 0;
 
     z-index: 10;
 }
 
-
 .back-btn {
     text-decoration: none;
-
     color: #6255e7;
 
     font-weight: 700;
@@ -130,6 +151,9 @@ button {
     min-width: 100px;
 }
 
+.back-btn:hover {
+    color: #5145d1;
+}
 
 .nav-spacer {
     min-width: 100px;
@@ -141,6 +165,7 @@ button {
    ================================================== */
 
 .dashboard {
+    width: 100%;
     max-width: 1100px;
 
     margin: 0 auto;
@@ -148,29 +173,23 @@ button {
     padding: 30px 20px 60px;
 }
 
-
 .welcome {
     display: flex;
 
     justify-content: space-between;
-
     align-items: center;
 
     margin-bottom: 25px;
 }
 
-
 .muted {
     color: #7b8495;
 }
 
-
 .welcome h1 {
     margin-top: 3px;
-
     font-size: 30px;
 }
-
 
 .avatar {
     width: 50px;
@@ -179,16 +198,13 @@ button {
     border-radius: 50%;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
     background: #6255e7;
-
     color: #ffffff;
 
     font-weight: 800;
-
     font-size: 20px;
 }
 
@@ -213,7 +229,6 @@ button {
     display: flex;
 
     justify-content: space-between;
-
     align-items: center;
 
     margin-bottom: 22px;
@@ -222,52 +237,26 @@ button {
         0 10px 30px rgba(98, 85, 231, 0.2);
 }
 
-
 .balance p {
     opacity: 0.85;
 }
 
-
 .balance h2 {
     font-size: 36px;
-
     margin: 5px 0 15px;
 }
 
-
 .balance .btn {
     background: #ffffff;
-
     color: #5145d1;
 }
 
+.balance .btn:hover {
+    background: #f3f3ff;
+}
 
 .balance-icon {
     font-size: 45px;
-}
-
-
-/* ==================================================
-   GENERAL BUTTON
-   ================================================== */
-
-.btn {
-    border: none;
-
-    background: #6255e7;
-
-    color: #ffffff;
-
-    padding: 11px 18px;
-
-    border-radius: 10px;
-
-    font-weight: 700;
-}
-
-
-.btn:hover {
-    background: #5145d1;
 }
 
 
@@ -286,7 +275,6 @@ button {
     margin-bottom: 30px;
 }
 
-
 .stat {
     background: #ffffff;
 
@@ -295,8 +283,10 @@ button {
     border-radius: 16px;
 
     padding: 18px;
-}
 
+    box-shadow:
+        0 4px 15px rgba(30, 40, 70, 0.03);
+}
 
 .stat span {
     display: block;
@@ -307,7 +297,6 @@ button {
 
     margin-bottom: 5px;
 }
-
 
 .stat b {
     font-size: 22px;
@@ -329,7 +318,6 @@ button {
     margin: 15px 0 30px;
 }
 
-
 .action-card {
     background: #ffffff;
 
@@ -338,22 +326,31 @@ button {
     border-radius: 18px;
 
     padding: 22px;
+
+    box-shadow:
+        0 5px 18px rgba(30, 40, 70, 0.04);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
+.action-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(30, 40, 70, 0.08);
+}
 
 .action-card .icon {
     font-size: 30px;
-
     margin-bottom: 10px;
 }
 
-
 .action-card h3 {
     font-size: 19px;
-
     margin-bottom: 5px;
 }
-
 
 .action-card p {
     color: #7b8495;
@@ -364,12 +361,17 @@ button {
 }
 
 
+/* ==================================================
+   REFERRAL BOX
+   ================================================== */
+
 .ref {
     display: flex;
 
     align-items: center;
-
     justify-content: space-between;
+
+    gap: 10px;
 
     background: #f4f5f9;
 
@@ -380,17 +382,22 @@ button {
     font-weight: 700;
 }
 
-
 .ref button {
     border: none;
 
     background: #6255e7;
 
-    color: white;
+    color: #ffffff;
 
     padding: 7px 10px;
 
     border-radius: 7px;
+
+    font-weight: 700;
+}
+
+.ref button:hover {
+    background: #5145d1;
 }
 
 
@@ -408,27 +415,27 @@ button {
     padding: 20px;
 }
 
-
 .activity h2 {
     margin-bottom: 10px;
 }
-
 
 .activity-row {
     display: flex;
 
     justify-content: space-between;
 
+    align-items: center;
+
+    gap: 15px;
+
     padding: 14px 0;
 
     border-bottom: 1px solid #edf0f5;
 }
 
-
 .activity-row:last-child {
     border-bottom: none;
 }
-
 
 .activity-empty {
     padding: 20px 0;
@@ -483,7 +490,6 @@ button {
         0 8px 25px rgba(35, 40, 80, 0.06);
 }
 
-
 .hero-icon {
     width: 64px;
     height: 64px;
@@ -498,15 +504,15 @@ button {
     border-radius: 18px;
 
     font-size: 30px;
-}
 
+    flex-shrink: 0;
+}
 
 .tasks-hero h1 {
     font-size: 30px;
 
     margin-bottom: 5px;
 }
-
 
 .tasks-hero p {
     color: #697386;
@@ -516,7 +522,7 @@ button {
 
 
 /* ==================================================
-   TASK INFO
+   TASK INFORMATION
    ================================================== */
 
 .task-info {
@@ -538,7 +544,6 @@ button {
     gap: 12px;
 }
 
-
 .info-item {
     display: flex;
 
@@ -549,11 +554,9 @@ button {
     padding: 12px;
 }
 
-
 .info-item > span {
     font-size: 25px;
 }
-
 
 .info-item strong {
     display: block;
@@ -562,7 +565,6 @@ button {
 
     color: #1d2739;
 }
-
 
 .info-item small {
     display: block;
@@ -589,11 +591,9 @@ button {
     margin-bottom: 16px;
 }
 
-
 .section-title h2 {
     font-size: 23px;
 }
-
 
 .section-title p {
     color: #7b8495;
@@ -602,7 +602,6 @@ button {
 
     margin-top: 2px;
 }
-
 
 .task-count {
     width: 38px;
@@ -617,7 +616,6 @@ button {
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     font-weight: 800;
@@ -650,8 +648,18 @@ button {
 
     box-shadow:
         0 5px 18px rgba(30, 40, 70, 0.05);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
+.task-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(30, 40, 70, 0.08);
+}
 
 .task-card-top {
     display: flex;
@@ -665,13 +673,13 @@ button {
     margin-bottom: 8px;
 }
 
-
 .task-card h2 {
     font-size: 21px;
 
     color: #172033;
-}
 
+    margin-bottom: 8px;
+}
 
 .task-card p {
     color: #697386;
@@ -680,7 +688,6 @@ button {
 
     margin-bottom: 14px;
 }
-
 
 .task-reward {
     flex-shrink: 0;
@@ -698,7 +705,6 @@ button {
     font-size: 16px;
 }
 
-
 .task-bottom {
     display: flex;
 
@@ -711,7 +717,6 @@ button {
     margin-top: 10px;
 }
 
-
 .reward-label {
     color: #7b8495;
 
@@ -720,7 +725,7 @@ button {
 
 
 /* ==================================================
-   TASK BUTTON
+   TASK BUTTONS
    ================================================== */
 
 .task-btn {
@@ -737,604 +742,18 @@ button {
     font-size: 15px;
 
     font-weight: 700;
-}
 
+    transition:
+        background 0.2s ease,
+        transform 0.1s ease;
+}
 
 .task-btn:hover {
     background: #5145d1;
 }
 
-
-.task-btn:disabled {
-    background: #e9edf3;
-
-    color: #7a8392;
-
-    cursor: not-allowed;
+.task-btn:active {
+    transform: scale(0.97);
 }
 
-
-/* ==================================================
-   TASK STATUS
-   ================================================== */
-
-.task-status {
-    display: inline-block;
-
-    padding: 6px 10px;
-
-    border-radius: 8px;
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-    white-space: nowrap;
-}
-
-
-.task-status.available {
-    background: #eef2ff;
-
-    color: #6255e7;
-}
-
-
-.task-status.started {
-    background: #fff7df;
-
-    color: #9a6b00;
-}
-
-
-.task-status.pending {
-    background: #fff7df;
-
-    color: #9a6b00;
-}
-
-
-.task-status.approved {
-    background: #eaf8f0;
-
-    color: #16834b;
-}
-
-
-.task-status.rejected {
-    background: #fff0f0;
-
-    color: #c03939;
-}
-
-
-/* ==================================================
-   TASK NOTE
-   ================================================== */
-
-.task-note {
-    margin-top: 25px;
-
-    background: #fffaf0;
-
-    border: 1px solid #f5e5b8;
-
-    border-radius: 16px;
-
-    padding: 18px;
-
-    display: flex;
-
-    gap: 12px;
-
-    align-items: flex-start;
-}
-
-
-.task-note > span {
-    font-size: 22px;
-}
-
-
-.task-note strong {
-    font-size: 14px;
-
-    color: #5f4b13;
-}
-
-
-.task-note p {
-    font-size: 13px;
-
-    color: #806c32;
-
-    margin-top: 3px;
-}
-
-
-/* ==================================================
-   ADMIN PANEL
-   ================================================== */
-
-.admin-header {
-    background: #ffffff;
-
-    border: 1px solid #e8ebf2;
-
-    border-radius: 18px;
-
-    padding: 22px;
-
-    margin-bottom: 20px;
-
-    box-shadow:
-        0 5px 18px rgba(30, 40, 70, 0.04);
-}
-
-
-.admin-header h2 {
-    margin-bottom: 5px;
-}
-
-
-.admin-header p {
-    color: #7b8495;
-
-    font-size: 14px;
-}
-
-
-#adminSubmissions {
-    display: grid;
-
-    gap: 16px;
-}
-
-
-.admin-card {
-    background: #ffffff;
-
-    border: 1px solid #e8ebf2;
-
-    border-radius: 18px;
-
-    padding: 22px;
-
-    box-shadow:
-        0 5px 18px rgba(30, 40, 70, 0.05);
-}
-
-
-.admin-card-header {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 15px;
-
-    margin-bottom: 15px;
-}
-
-
-.admin-card h3 {
-    font-size: 20px;
-}
-
-
-.admin-card p {
-    color: #5f6878;
-
-    margin-bottom: 7px;
-
-    font-size: 14px;
-}
-
-
-.admin-reward {
-    flex-shrink: 0;
-
-    background: #ecfdf3;
-
-    color: #087443;
-
-    padding: 7px 11px;
-
-    border-radius: 8px;
-
-    font-weight: 800;
-}
-
-
-/* ==================================================
-   ADMIN ACTIONS
-   ================================================== */
-
-.admin-actions {
-    display: flex;
-
-    gap: 10px;
-
-    margin-top: 18px;
-}
-
-
-.approve-btn,
-.reject-btn {
-    border: none;
-
-    padding: 11px 18px;
-
-    border-radius: 9px;
-
-    color: #ffffff;
-
-    font-weight: 700;
-
-    cursor: pointer;
-}
-
-
-.approve-btn {
-    background: #16834b;
-}
-
-
-.approve-btn:hover {
-    background: #116b3d;
-}
-
-
-.reject-btn {
-    background: #d84b4b;
-}
-
-
-.reject-btn:hover {
-    background: #b93737;
-}
-
-
-/* ==================================================
-   ADMIN STATUS
-   ================================================== */
-
-.status-approved,
-.status-rejected,
-.status-pending {
-    margin-top: 15px;
-
-    display: inline-block;
-
-    padding: 8px 12px;
-
-    border-radius: 8px;
-
-    font-weight: 700;
-}
-
-
-.status-approved {
-    background: #eaf8f0;
-
-    color: #16834b;
-}
-
-
-.status-rejected {
-    background: #fff0f0;
-
-    color: #c03939;
-}
-
-
-.status-pending {
-    background: #fff7df;
-
-    color: #9a6b00;
-}
-
-
-/* ==================================================
-   ADMIN EMPTY
-   ================================================== */
-
-.admin-empty {
-    background: #ffffff;
-
-    border: 1px solid #e8ebf2;
-
-    border-radius: 18px;
-
-    padding: 40px 20px;
-
-    text-align: center;
-}
-
-
-.admin-empty-icon {
-    font-size: 42px;
-
-    margin-bottom: 10px;
-}
-
-
-.admin-empty h3 {
-    margin-bottom: 5px;
-}
-
-
-.admin-empty p {
-    color: #7b8495;
-}
-
-
-/* ==================================================
-   ADMIN LINK CARD
-   ================================================== */
-
-.admin-link-card {
-    margin-top: 20px;
-
-    background: #ffffff;
-
-    border: 1px solid #e8ebf2;
-
-    border-radius: 18px;
-
-    padding: 18px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 15px;
-}
-
-
-.admin-link-card p {
-    color: #7b8495;
-
-    font-size: 13px;
-
-    margin-top: 3px;
-}
-
-
-.admin-link-card a {
-    text-decoration: none;
-
-    background: #6255e7;
-
-    color: #ffffff;
-
-    padding: 10px 15px;
-
-    border-radius: 9px;
-
-    font-weight: 700;
-}
-
-
-/* ==================================================
-   MOBILE
-   ================================================== */
-
-@media (max-width: 700px) {
-
-    .dash-nav {
-        padding: 0 15px;
-    }
-
-
-    .dash-nav .logo {
-        font-size: 23px;
-    }
-
-
-    .nav-right {
-        gap: 8px;
-    }
-
-
-    .admin-dashboard-link {
-        display: none;
-    }
-
-
-    .dashboard {
-        padding:
-            22px 14px 45px;
-    }
-
-
-    .welcome h1 {
-        font-size: 25px;
-    }
-
-
-    .balance {
-        padding: 20px;
-    }
-
-
-    .balance h2 {
-        font-size: 32px;
-    }
-
-
-    .stats-grid {
-        grid-template-columns:
-            repeat(2, 1fr);
-    }
-
-
-    .grid.cards {
-        grid-template-columns: 1fr;
-    }
-
-
-    .task-nav {
-        padding: 0 14px;
-    }
-
-
-    .task-nav .logo {
-        font-size: 23px;
-    }
-
-
-    .back-btn,
-    .nav-spacer {
-        min-width: 85px;
-    }
-
-
-    .tasks-page {
-        padding:
-            20px 14px 45px;
-    }
-
-
-    .tasks-hero {
-        padding: 20px;
-
-        border-radius: 18px;
-    }
-
-
-    .hero-icon {
-        width: 52px;
-
-        height: 52px;
-
-        font-size: 24px;
-    }
-
-
-    .tasks-hero h1 {
-        font-size: 25px;
-    }
-
-
-    .tasks-hero p {
-        font-size: 14px;
-    }
-
-
-    .task-info {
-        grid-template-columns: 1fr;
-
-        gap: 2px;
-
-        padding: 10px;
-    }
-
-
-    .info-item {
-        padding: 9px;
-    }
-
-
-    .task-card {
-        padding: 19px;
-    }
-
-
-    .task-card-top {
-        flex-direction: column;
-    }
-
-
-    .task-bottom {
-        flex-direction: column;
-
-        align-items: stretch;
-    }
-
-
-    .task-btn {
-        width: 100%;
-
-        padding: 13px;
-    }
-
-
-    .task-note {
-        padding: 15px;
-    }
-
-
-    .admin-actions {
-        flex-direction: column;
-    }
-
-
-    .approve-btn,
-    .reject-btn {
-        width: 100%;
-    }
-
-
-    .admin-card-header {
-        align-items: flex-start;
-
-        flex-direction: column;
-    }
-
-
-    .admin-link-card {
-        flex-direction: column;
-
-        align-items: stretch;
-    }
-
-
-    .admin-link-card a {
-        text-align: center;
-    }
-
-}
-
-
-/* ==================================================
-   SMALL PHONES
-   ================================================== */
-
-@media (max-width: 400px) {
-
-    .tasks-hero {
-        gap: 12px;
-    }
-
-
-    .tasks-hero h1 {
-        font-size: 22px;
-    }
-
-
-    .hero-icon {
-        width: 48px;
-
-        height: 48px;
-    }
-
-
-    .stats-grid {
-        gap: 9px;
-    }
-
-
-    .stat {
-        padding: 14px;
-    }
-
-
-    .stat b {
-        font-size: 19px;
-    }
-
-   }
+.task-btn:
