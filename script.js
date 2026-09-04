@@ -8,14 +8,15 @@
 // ==================================================
 
 function signup(e) {
-
     e.preventDefault();
 
-    const name =
-        document.getElementById("name").value.trim();
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
 
-    const email =
-        document.getElementById("email").value.trim();
+    if (!nameInput || !emailInput) return;
+
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim().toLowerCase();
 
     if (!name || !email) {
         alert("Please enter your name and email.");
@@ -39,17 +40,18 @@ function signup(e) {
 }
 
 
-
 // ==================================================
 // LOGIN
 // ==================================================
 
 function login(e) {
-
     e.preventDefault();
 
-    const email =
-        document.getElementById("loginEmail").value.trim();
+    const emailInput = document.getElementById("loginEmail");
+
+    if (!emailInput) return;
+
+    const email = emailInput.value.trim().toLowerCase();
 
     if (!email) {
         alert("Please enter your email.");
@@ -78,16 +80,13 @@ function login(e) {
 }
 
 
-
 // ==================================================
 // LOGOUT
 // ==================================================
 
 function logout() {
-
     window.location.href = "index.html";
 }
-
 
 
 // ==================================================
@@ -99,14 +98,20 @@ function copyRef() {
     const code = "ABC123";
 
     if (navigator.clipboard) {
-        navigator.clipboard.writeText(code);
+
+        navigator.clipboard.writeText(code)
+            .then(function () {
+                alert("Referral code copied: " + code);
+            })
+            .catch(function () {
+                alert("Referral code: " + code);
+            });
+
+    } else {
+
+        alert("Referral code: " + code);
     }
-
-    alert(
-        "Referral code copied: " + code
-    );
 }
-
 
 
 // ==================================================
@@ -133,24 +138,21 @@ function withdraw() {
         return;
     }
 
-    const balance =
-        Number(user.balance || 0);
+    const balance = Number(user.balance || 0);
 
     if (amount > balance) {
         alert("Insufficient balance.");
         return;
     }
 
-    const upi =
-        prompt("Enter your UPI ID:");
+    const upi = prompt("Enter your UPI ID:");
 
     if (!upi || !upi.includes("@")) {
         alert("Please enter a valid UPI ID.");
         return;
     }
 
-    user.balance =
-        balance - amount;
+    user.balance = balance - amount;
 
     localStorage.setItem(
         "earnhubUser",
@@ -178,9 +180,8 @@ function withdraw() {
 }
 
 
-
 // ==================================================
-// TASK LIST
+// TASK SYSTEM
 // ==================================================
 
 const earnHubTasks = [
@@ -212,9 +213,8 @@ const earnHubTasks = [
 ];
 
 
-
 // ==================================================
-// TASK DATA
+// GET TASK DATA
 // ==================================================
 
 function getTaskData() {
@@ -225,6 +225,10 @@ function getTaskData() {
 }
 
 
+// ==================================================
+// SAVE TASK DATA
+// ==================================================
+
 function saveTaskData(data) {
 
     localStorage.setItem(
@@ -234,79 +238,59 @@ function saveTaskData(data) {
 }
 
 
-
-// ==================================================
-// SUBMISSIONS
-// ==================================================
-
-function getSubmissions() {
-
-    return JSON.parse(
-        localStorage.getItem(
-            "earnhubSubmissions"
-        ) || "[]"
-    );
-}
-
-
-function saveSubmissions(submissions) {
-
-    localStorage.setItem(
-        "earnhubSubmissions",
-        JSON.stringify(submissions)
-    );
-}
-
-
-
 // ==================================================
 // START TASK
 // ==================================================
 
 function startTask(taskId) {
 
-    const task =
-        earnHubTasks.find(
-            t => t.id === Number(taskId)
-        );
+    const task = earnHubTasks.find(
+        function (t) {
+            return t.id === Number(taskId);
+        }
+    );
 
     if (!task) {
-
         alert("Task not found.");
-
         return;
     }
 
-    const data =
-        getTaskData();
+    const data = getTaskData();
 
-    const existing =
-        data[taskId];
+    const existing = data[taskId];
 
-    if (
-        existing &&
-        (
-            existing.status === "Pending" ||
-            existing.status === "Completed"
-        )
-    ) {
+    if (existing) {
 
-        alert(
-            "You have already submitted this task."
-        );
+        if (existing.status === "Pending") {
+            alert("This task is already pending approval.");
+            return;
+        }
 
-        return;
+        if (existing.status === "Approved") {
+            alert("You have already completed this task.");
+            return;
+        }
+
+        if (existing.status === "Started") {
+            alert("This task is already started.");
+            return;
+        }
     }
 
     data[taskId] = {
 
+        taskId: task.id,
+
+        title: task.title,
+
+        reward: task.reward,
+
+        description: task.description,
+
         status: "Started",
 
-        startedAt:
-            new Date().toLocaleString(),
+        startedAt: new Date().toLocaleString()
 
-        reward:
-            task.reward
     };
 
     saveTaskData(data);
@@ -321,125 +305,49 @@ function startTask(taskId) {
 }
 
 
-
 // ==================================================
 // SUBMIT TASK
 // ==================================================
 
 function submitTask(taskId) {
 
-    const task =
-        earnHubTasks.find(
-            t => t.id === Number(taskId)
-        );
+    const task = earnHubTasks.find(
+        function (t) {
+            return t.id === Number(taskId);
+        }
+    );
 
     if (!task) {
-
         alert("Task not found.");
-
         return;
     }
 
-    const data =
-        getTaskData();
+    const data = getTaskData();
 
     if (
         !data[taskId] ||
         data[taskId].status !== "Started"
     ) {
 
-        alert(
-            "Please start the task first."
-        );
-
+        alert("Please start the task first.");
         return;
     }
 
-
-    // Get current user
-
-    const user = JSON.parse(
-        localStorage.getItem(
-            "earnhubUser"
-        ) || "null"
-    );
-
-
-    if (!user) {
-
-        alert(
-            "Please login first."
-        );
-
-        return;
-    }
-
-
-    // Change task status
-
-    data[taskId].status =
-        "Pending";
+    data[taskId].status = "Pending";
 
     data[taskId].submittedAt =
         new Date().toLocaleString();
 
     saveTaskData(data);
 
-
-    // Create admin submission
-
-    const submissions =
-        getSubmissions();
-
-
-    const submission = {
-
-        id:
-            Date.now(),
-
-        taskId:
-            task.id,
-
-        taskTitle:
-            task.title,
-
-        reward:
-            task.reward,
-
-        userName:
-            user.name,
-
-        userEmail:
-            user.email,
-
-        status:
-            "Pending",
-
-        submittedAt:
-            new Date().toLocaleString()
-    };
-
-
-    submissions.push(
-        submission
-    );
-
-    saveSubmissions(
-        submissions
-    );
-
-
     alert(
         "Task submitted successfully!\n\n" +
-        "Reward: ₹" +
-        task.reward +
+        "Reward: ₹" + task.reward +
         "\nStatus: Pending Approval"
     );
 
-
     renderTasks();
 }
-
 
 
 // ==================================================
@@ -449,212 +357,287 @@ function submitTask(taskId) {
 function renderTasks() {
 
     const container =
-        document.getElementById(
-            "taskList"
-        );
+        document.getElementById("taskList");
 
     if (!container) return;
 
-
-    const data =
-        getTaskData();
-
+    const data = getTaskData();
 
     container.innerHTML = "";
 
+    earnHubTasks.forEach(function (task) {
 
-    earnHubTasks.forEach(
-        task => {
+        const taskData = data[task.id];
 
-            const taskData =
-                data[task.id];
+        let button = "";
+        let status = "";
 
+        if (!taskData) {
 
-            let button = "";
+            button = `
+                <button
+                    class="task-btn"
+                    onclick="startTask(${task.id})">
+                    Start Task
+                </button>
+            `;
 
+        } else if (taskData.status === "Started") {
 
-            if (!taskData) {
+            status = `
+                <div class="task-status status-started">
+                    🟡 Task Started
+                </div>
+            `;
 
-                button = `
-                    <button
-                        onclick="startTask(${task.id})">
+            button = `
+                <button
+                    class="task-btn"
+                    onclick="submitTask(${task.id})">
+                    Submit Task
+                </button>
+            `;
 
-                        Start Task
+        } else if (taskData.status === "Pending") {
 
-                    </button>
-                `;
+            status = `
+                <div class="task-status status-pending">
+                    ⏳ Pending Approval
+                </div>
+            `;
 
-            }
+            button = `
+                <button
+                    class="task-btn"
+                    disabled>
+                    Waiting for Approval
+                </button>
+            `;
 
+        } else if (taskData.status === "Approved") {
 
-            else if (
-                taskData.status ===
-                "Started"
-            ) {
+            status = `
+                <div class="task-status status-approved">
+                    ✓ Approved • ₹${task.reward} Added
+                </div>
+            `;
 
-                button = `
-                    <button
-                        onclick="submitTask(${task.id})">
+            button = `
+                <button
+                    class="task-btn"
+                    disabled>
+                    ✓ Completed
+                </button>
+            `;
 
-                        Submit Task
+        } else if (taskData.status === "Rejected") {
 
-                    </button>
-                `;
+            status = `
+                <div class="task-status status-rejected">
+                    ✕ Rejected
+                </div>
+            `;
 
-            }
+            button = `
+                <button
+                    class="task-btn"
+                    onclick="startTask(${task.id})">
+                    Try Again
+                </button>
+            `;
+        }
 
+        container.innerHTML += `
 
-            else if (
-                taskData.status ===
-                "Pending"
-            ) {
+            <article class="task-card">
 
-                button = `
-                    <button disabled>
+                <div class="task-card-top">
 
-                        ⏳ Pending Approval
+                    <div>
 
-                    </button>
-                `;
+                        <h2>${task.title}</h2>
 
-            }
+                        <p>
+                            ${task.description}
+                        </p>
 
+                    </div>
 
-            else {
+                    <div class="task-reward">
+                        ₹${task.reward}
+                    </div>
 
-                button = `
-                    <button disabled>
+                </div>
 
-                        ✓ Completed
+                <div class="task-bottom">
 
-                    </button>
-                `;
-
-            }
-
-
-            container.innerHTML += `
-
-                <div class="task-card">
-
-                    <h2>
-                        ${task.title}
-                    </h2>
-
-                    <p>
-                        ${task.description}
-                    </p>
-
-                    <strong>
-                        Reward: ₹${task.reward}
-                    </strong>
+                    <span class="reward-label">
+                        Reward
+                    </span>
 
                     ${button}
 
                 </div>
 
-            `;
-        }
-    );
+                ${status}
+
+            </article>
+
+        `;
+    });
 }
-
-
-
-// ==================================================
-// UPDATE DASHBOARD BALANCE
-// ==================================================
-
-function updateDashboard() {
-
-    const balanceElement =
-        document.getElementById(
-            "balance"
-        );
-
-    if (!balanceElement)
-        return;
-
-
-    const user = JSON.parse(
-        localStorage.getItem(
-            "earnhubUser"
-        ) || "null"
-    );
-
-
-    if (user) {
-
-        balanceElement.textContent =
-            Number(
-                user.balance || 0
-            ).toFixed(0);
-    }
-}
-
-
-
-// ==================================================
-// UPDATE USER NAME
-// ==================================================
-
-function updateUserName() {
-
-    const userName =
-        document.getElementById(
-            "userName"
-        );
-
-    if (!userName)
-        return;
-
-
-    const user = JSON.parse(
-        localStorage.getItem(
-            "earnhubUser"
-        ) || "null"
-    );
-
-
-    if (user) {
-
-        userName.textContent =
-            user.name + " 👋";
-    }
-}
-
 
 
 // ==================================================
 // ADMIN - GET SUBMISSIONS
 // ==================================================
 
-function renderAdminSubmissions() {
+function getAdminTasks() {
+
+    const data = getTaskData();
+
+    const submissions = [];
+
+    Object.keys(data).forEach(function (key) {
+
+        const task = data[key];
+
+        if (
+            task &&
+            (
+                task.status === "Pending" ||
+                task.status === "Approved" ||
+                task.status === "Rejected"
+            )
+        ) {
+
+            submissions.push(task);
+        }
+    });
+
+    return submissions;
+}
+
+
+// ==================================================
+// ADMIN - APPROVE TASK
+// ==================================================
+
+function approveTask(taskId) {
+
+    const data = getTaskData();
+
+    const task = data[taskId];
+
+    if (!task) {
+        alert("Task not found.");
+        return;
+    }
+
+    if (task.status !== "Pending") {
+        alert("This task is not pending.");
+        return;
+    }
+
+    const user = JSON.parse(
+        localStorage.getItem("earnhubUser") || "null"
+    );
+
+    if (!user) {
+        alert("No user account found.");
+        return;
+    }
+
+    const reward = Number(task.reward || 0);
+
+    user.balance =
+        Number(user.balance || 0) + reward;
+
+    localStorage.setItem(
+        "earnhubUser",
+        JSON.stringify(user)
+    );
+
+    task.status = "Approved";
+
+    task.approvedAt =
+        new Date().toLocaleString();
+
+    data[taskId] = task;
+
+    saveTaskData(data);
+
+    alert(
+        "Task approved!\n\n" +
+        "₹" + reward +
+        " has been added to the user's balance."
+    );
+
+    renderAdminTasks();
+}
+
+
+// ==================================================
+// ADMIN - REJECT TASK
+// ==================================================
+
+function rejectTask(taskId) {
+
+    const data = getTaskData();
+
+    const task = data[taskId];
+
+    if (!task) {
+        alert("Task not found.");
+        return;
+    }
+
+    if (task.status !== "Pending") {
+        alert("This task is not pending.");
+        return;
+    }
+
+    task.status = "Rejected";
+
+    task.rejectedAt =
+        new Date().toLocaleString();
+
+    data[taskId] = task;
+
+    saveTaskData(data);
+
+    alert("Task rejected.");
+
+    renderAdminTasks();
+}
+
+
+// ==================================================
+// ADMIN - DISPLAY SUBMISSIONS
+// ==================================================
+
+function renderAdminTasks() {
 
     const container =
-        document.getElementById(
-            "adminSubmissions"
-        );
+        document.getElementById("adminSubmissions");
 
-    if (!container)
-        return;
+    if (!container) return;
 
-
-    const submissions =
-        getSubmissions();
-
+    const tasks = getAdminTasks();
 
     container.innerHTML = "";
 
-
-    if (submissions.length === 0) {
+    if (tasks.length === 0) {
 
         container.innerHTML = `
 
             <div class="admin-empty">
 
-                <h3>
-                    No task submissions
-                </h3>
+                <div class="admin-empty-icon">
+                    📋
+                </div>
+
+                <h3>No task submissions</h3>
 
                 <p>
                     Submitted tasks will appear here.
@@ -666,6 +649,172 @@ function renderAdminSubmissions() {
 
         return;
     }
+
+    tasks.forEach(function (task) {
+
+        let content = "";
+
+        if (task.status === "Pending") {
+
+            content = `
+
+                <div class="admin-actions">
+
+                    <button
+                        class="approve-btn"
+                        onclick="approveTask(${task.taskId})">
+                        ✓ Approve
+                    </button>
+
+                    <button
+                        class="reject-btn"
+                        onclick="rejectTask(${task.taskId})">
+                        ✕ Reject
+                    </button>
+
+                </div>
+
+            `;
+
+        } else if (task.status === "Approved") {
+
+            content = `
+
+                <div class="status-approved">
+                    ✓ Approved
+                </div>
+
+            `;
+
+        } else if (task.status === "Rejected") {
+
+            content = `
+
+                <div class="status-rejected">
+                    ✕ Rejected
+                </div>
+
+            `;
+        }
+
+        container.innerHTML += `
+
+            <article class="admin-card">
+
+                <div class="admin-card-header">
+
+                    <h3>
+                        ${task.title}
+                    </h3>
+
+                    <span class="admin-reward">
+                        ₹${task.reward}
+                    </span>
+
+                </div>
+
+                <p>
+                    <strong>Status:</strong>
+                    ${task.status}
+                </p>
+
+                <p>
+                    <strong>Started:</strong>
+                    ${task.startedAt || "-"}
+                </p>
+
+                <p>
+                    <strong>Submitted:</strong>
+                    ${task.submittedAt || "-"}
+                </p>
+
+                ${task.approvedAt ? `
+                    <p>
+                        <strong>Approved:</strong>
+                        ${task.approvedAt}
+                    </p>
+                ` : ""}
+
+                ${task.rejectedAt ? `
+                    <p>
+                        <strong>Rejected:</strong>
+                        ${task.rejectedAt}
+                    </p>
+                ` : ""}
+
+                ${content}
+
+            </article>
+
+        `;
+    });
+}
+
+
+// ==================================================
+// UPDATE DASHBOARD BALANCE
+// ==================================================
+
+function updateDashboard() {
+
+    const balanceElement =
+        document.getElementById("balance");
+
+    if (!balanceElement) return;
+
+    const user = JSON.parse(
+        localStorage.getItem("earnhubUser") || "null"
+    );
+
+    if (user) {
+
+        balanceElement.textContent =
+            Number(user.balance || 0).toFixed(0);
+    }
+}
+
+
+// ==================================================
+// UPDATE USER NAME
+// ==================================================
+
+function updateUserName() {
+
+    const userName =
+        document.getElementById("userName");
+
+    if (!userName) return;
+
+    const user = JSON.parse(
+        localStorage.getItem("earnhubUser") || "null"
+    );
+
+    if (user) {
+
+        userName.textContent =
+            user.name + " 👋";
+    }
+}
+
+
+// ==================================================
+// PAGE LOAD
+// ==================================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        updateUserName();
+
+        updateDashboard();
+
+        renderTasks();
+
+        renderAdminTasks();
+
+    }
+);
 
 
    
