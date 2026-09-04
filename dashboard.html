@@ -18,9 +18,17 @@
         Earn<span>Hub</span>
     </div>
 
-    <button onclick="logout()" class="logout">
-        Logout
-    </button>
+    <div class="nav-right">
+
+        <a href="admin.html" class="admin-dashboard-link">
+            Admin
+        </a>
+
+        <button onclick="logout()" class="logout">
+            Logout
+        </button>
+
+    </div>
 
 </header>
 
@@ -32,6 +40,7 @@
     <div class="welcome">
 
         <div>
+
             <p class="muted">
                 Welcome back
             </p>
@@ -39,9 +48,10 @@
             <h1 id="userName">
                 User 👋
             </h1>
+
         </div>
 
-        <div class="avatar" id="avatar">
+        <div class="avatar" id="userAvatar">
             U
         </div>
 
@@ -59,7 +69,7 @@
             </p>
 
             <h2>
-                ₹<span id="balance">250</span>
+                ₹<span id="balance">0</span>
             </h2>
 
             <button
@@ -84,23 +94,54 @@
     <section class="stats-grid">
 
         <div class="stat">
-            <span>Today</span>
-            <b id="todayEarnings">₹35</b>
+
+            <span>
+                Today
+            </span>
+
+            <b id="todayEarnings">
+                ₹0
+            </b>
+
         </div>
 
-        <div class="stat">
-            <span>Task earnings</span>
-            <b id="taskEarnings">₹150</b>
-        </div>
 
         <div class="stat">
-            <span>Referral commission</span>
-            <b>₹75</b>
+
+            <span>
+                Task earnings
+            </span>
+
+            <b id="taskEarnings">
+                ₹0
+            </b>
+
         </div>
 
+
         <div class="stat">
-            <span>Ad rewards</span>
-            <b>₹25</b>
+
+            <span>
+                Referral commission
+            </span>
+
+            <b>
+                ₹0
+            </b>
+
+        </div>
+
+
+        <div class="stat">
+
+            <span>
+                Ad rewards
+            </span>
+
+            <b>
+                ₹0
+            </b>
+
         </div>
 
     </section>
@@ -111,6 +152,7 @@
     <h2>
         Earn more
     </h2>
+
 
     <div class="grid cards">
 
@@ -127,8 +169,8 @@
                 Tasks
             </h3>
 
-            <p>
-                Complete tasks and earn rewards
+            <p id="availableTaskText">
+                Tasks available
             </p>
 
             <button
@@ -160,7 +202,9 @@
 
             <div class="ref">
 
-                <span>ABC123</span>
+                <span id="refCode">
+                    ABC123
+                </span>
 
                 <button onclick="copyRef()">
                     Copy
@@ -189,13 +233,14 @@
 
             <button
                 class="btn"
-                onclick="alert('Ad integration will be added with a compliant ad provider.')">
+                onclick="viewAds()">
 
                 View Ads
 
             </button>
 
         </article>
+
 
     </div>
 
@@ -208,26 +253,39 @@
             Recent activity
         </h2>
 
-        <div id="activityList">
+        <div id="recentActivity">
 
-            <div class="activity-row">
-                <span>📝 Task reward</span>
-                <b>+₹20</b>
-            </div>
-
-            <div class="activity-row">
-                <span>👥 Referral commission</span>
-                <b>+₹15</b>
-            </div>
-
-            <div class="activity-row">
-                <span>📺 Ad reward</span>
-                <b>+₹5</b>
+            <div class="activity-empty">
+                No activity yet.
             </div>
 
         </div>
 
     </section>
+
+
+    <!-- ADMIN LINK -->
+
+    <section class="admin-link-card">
+
+        <div>
+
+            <strong>
+                Administration
+            </strong>
+
+            <p>
+                Review submitted tasks.
+            </p>
+
+        </div>
+
+        <a href="admin.html">
+            Open Admin
+        </a>
+
+    </section>
+
 
 </main>
 
