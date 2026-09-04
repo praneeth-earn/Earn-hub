@@ -9,7 +9,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>EarnHub - Admin</title>
+    <title>Admin - EarnHub</title>
 
     <link
         rel="stylesheet"
@@ -21,25 +21,34 @@
 <body>
 
 
-<header class="dash-nav">
-
-    <div class="logo">
-        Earn<span>Hub</span>
-    </div>
+<header class="task-nav">
 
     <a
         href="dashboard.html"
         class="back-btn">
 
-        Dashboard
+        ← Dashboard
 
     </a>
+
+
+    <div class="logo">
+
+        Earn<span>Hub</span>
+
+    </div>
+
+
+    <div class="nav-spacer"></div>
 
 </header>
 
 
-<main class="dashboard">
 
+<main class="tasks-page">
+
+
+    <!-- ADMIN HEADER -->
 
     <section class="admin-header">
 
@@ -48,38 +57,30 @@
         </h2>
 
         <p>
-            Review submitted tasks and approve or reject rewards.
+            Review user task submissions and approve or reject them.
         </p>
 
     </section>
 
 
-    <div class="admin-stats">
 
-        <div class="stat">
-            <span>Pending submissions</span>
-            <b id="pendingCount">0</b>
+    <!-- ADMIN SUBMISSIONS -->
+
+    <section id="adminSubmissions">
+
+        <div class="admin-empty">
+
+            <div class="admin-empty-icon">
+                📋
+            </div>
+
+            <h3>
+                Loading submissions...
+            </h3>
+
         </div>
 
-        <div class="stat">
-            <span>Approved</span>
-            <b id="approvedCount">0</b>
-        </div>
-
-        <div class="stat">
-            <span>Rejected</span>
-            <b id="rejectedCount">0</b>
-        </div>
-
-    </div>
-
-
-    <h2 class="admin-section-title">
-        Task Submissions
-    </h2>
-
-
-    <div id="adminSubmissions"></div>
+    </section>
 
 
 </main>
