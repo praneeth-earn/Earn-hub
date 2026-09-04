@@ -9,14 +9,13 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>EarnHub - Admin</title>
+    <title>EarnHub - Admin Panel</title>
 
     <link
         rel="stylesheet"
         href="style.css">
 
 </head>
-
 
 <body>
 
@@ -29,62 +28,121 @@
 
     <a
         href="dashboard.html"
-        class="back-btn">
-
+        class="admin-dashboard-link">
         Dashboard
-
     </a>
 
 </header>
 
 
-
 <main class="dashboard">
 
 
-    <div class="welcome">
+    <!-- ADMIN HEADER -->
+
+    <section class="admin-header">
 
         <div>
 
-            <p class="muted">
-                EarnHub
+            <h2>
+                🛠️ Admin Panel
+            </h2>
+
+            <p>
+                Review and manage submitted tasks.
             </p>
 
-            <h1>
-                Admin Panel ⚙️
-            </h1>
+        </div>
+
+    </section>
+
+
+    <!-- ADMIN INFORMATION -->
+
+    <section class="task-info">
+
+        <div class="info-item">
+
+            <span>📋</span>
+
+            <div>
+
+                <strong>
+                    Submissions
+                </strong>
+
+                <small>
+                    Review user tasks
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="info-item">
+
+            <span>✓</span>
+
+            <div>
+
+                <strong>
+                    Approve
+                </strong>
+
+                <small>
+                    Add reward to balance
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="info-item">
+
+            <span>✕</span>
+
+            <div>
+
+                <strong>
+                    Reject
+                </strong>
+
+                <small>
+                    Decline submissions
+                </small>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- SUBMISSIONS -->
+
+    <div class="section-title">
+
+        <div>
+
+            <h2>
+                Task Submissions
+            </h2>
+
+            <p>
+                Review pending and completed submissions.
+            </p>
 
         </div>
 
     </div>
 
 
-
-    <section class="admin-header">
-
-        <h2>
-            Task Submissions
-        </h2>
-
-        <p>
-            Review submitted tasks and approve or reject them.
-        </p>
-
-    </section>
-
-
-
-    <div id="adminSubmissions">
-
-        <p>
-            Loading submissions...
-        </p>
-
-    </div>
+    <div id="adminSubmissions"></div>
 
 
 </main>
-
 
 
 <script src="script.js"></script>
