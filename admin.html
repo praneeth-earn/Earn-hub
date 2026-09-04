@@ -9,13 +9,14 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>EarnHub - Admin Panel</title>
+    <title>EarnHub - Admin</title>
 
     <link
         rel="stylesheet"
         href="style.css">
 
 </head>
+
 
 <body>
 
@@ -28,8 +29,10 @@
 
     <a
         href="dashboard.html"
-        class="admin-dashboard-link">
+        class="back-btn">
+
         Dashboard
+
     </a>
 
 </header>
@@ -38,105 +41,42 @@
 <main class="dashboard">
 
 
-    <!-- ADMIN HEADER -->
-
     <section class="admin-header">
 
-        <div>
+        <h2>
+            Admin Panel
+        </h2>
 
-            <h2>
-                🛠️ Admin Panel
-            </h2>
-
-            <p>
-                Review and manage submitted tasks.
-            </p>
-
-        </div>
+        <p>
+            Review submitted tasks and approve or reject rewards.
+        </p>
 
     </section>
 
 
-    <!-- ADMIN INFORMATION -->
+    <div class="admin-stats">
 
-    <section class="task-info">
-
-        <div class="info-item">
-
-            <span>📋</span>
-
-            <div>
-
-                <strong>
-                    Submissions
-                </strong>
-
-                <small>
-                    Review user tasks
-                </small>
-
-            </div>
-
+        <div class="stat">
+            <span>Pending submissions</span>
+            <b id="pendingCount">0</b>
         </div>
 
-
-        <div class="info-item">
-
-            <span>✓</span>
-
-            <div>
-
-                <strong>
-                    Approve
-                </strong>
-
-                <small>
-                    Add reward to balance
-                </small>
-
-            </div>
-
+        <div class="stat">
+            <span>Approved</span>
+            <b id="approvedCount">0</b>
         </div>
 
-
-        <div class="info-item">
-
-            <span>✕</span>
-
-            <div>
-
-                <strong>
-                    Reject
-                </strong>
-
-                <small>
-                    Decline submissions
-                </small>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- SUBMISSIONS -->
-
-    <div class="section-title">
-
-        <div>
-
-            <h2>
-                Task Submissions
-            </h2>
-
-            <p>
-                Review pending and completed submissions.
-            </p>
-
+        <div class="stat">
+            <span>Rejected</span>
+            <b id="rejectedCount">0</b>
         </div>
 
     </div>
+
+
+    <h2 class="admin-section-title">
+        Task Submissions
+    </h2>
 
 
     <div id="adminSubmissions"></div>
