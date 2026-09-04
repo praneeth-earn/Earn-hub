@@ -1,26 +1,105 @@
-// ==================================================
-// EARNHUB SCRIPT
-// ==================================================
+/* ==================================================
+   EARNHUB - MAIN JAVASCRIPT
+   ================================================== */
 
 
-// ==================================================
-// SIGN UP
-// ==================================================
+/* ==================================================
+   TASK DATABASE
+   ================================================== */
+
+const earnHubTasks = [
+
+    {
+        id: 1,
+
+        title: "📱 Install an app",
+
+        reward: 10,
+
+        description:
+            "Install the specified app and complete the required activity."
+    },
+
+    {
+        id: 2,
+
+        title: "▶️ Watch a video",
+
+        reward: 5,
+
+        description:
+            "Watch the assigned video completely."
+    },
+
+    {
+        id: 3,
+
+        title: "📝 Complete a survey",
+
+        reward: 15,
+
+        description:
+            "Complete the assigned survey."
+    }
+
+];
+
+
+/* ==================================================
+   USER
+   ================================================== */
+
+function getUser() {
+
+    return JSON.parse(
+        localStorage.getItem("earnhubUser") || "null"
+    );
+
+}
+
+
+function saveUser(user) {
+
+    localStorage.setItem(
+        "earnhubUser",
+        JSON.stringify(user)
+    );
+
+}
+
+
+/* ==================================================
+   SIGN UP
+   ================================================== */
 
 function signup(e) {
 
     e.preventDefault();
 
+    const nameElement =
+        document.getElementById("name");
+
+    const emailElement =
+        document.getElementById("email");
+
+
+    if (!nameElement || !emailElement) {
+        return;
+    }
+
+
     const name =
-        document.getElementById("name").value.trim();
+        nameElement.value.trim();
 
     const email =
-        document.getElementById("email").value.trim();
+        emailElement.value.trim();
 
 
     if (!name || !email) {
 
-        alert("Please enter your name and email.");
+        alert(
+            "Please enter your name and email."
+        );
 
         return;
     }
@@ -36,52 +115,63 @@ function signup(e) {
 
         taskEarnings: 0,
 
+        referralEarnings: 0,
+
+        adEarnings: 0,
+
         createdAt:
             new Date().toLocaleString()
 
     };
 
 
-    localStorage.setItem(
-        "earnhubUser",
-        JSON.stringify(user)
+    saveUser(user);
+
+
+    alert(
+        "Account created successfully!"
     );
-
-
-    alert("Account created successfully!");
 
 
     window.location.href =
         "dashboard.html";
+
 }
 
 
-
-// ==================================================
-// LOGIN
-// ==================================================
+/* ==================================================
+   LOGIN
+   ================================================== */
 
 function login(e) {
 
     e.preventDefault();
 
 
+    const emailElement =
+        document.getElementById("loginEmail");
+
+
+    if (!emailElement) {
+        return;
+    }
+
+
     const email =
-        document.getElementById("loginEmail").value.trim();
+        emailElement.value.trim();
 
 
     if (!email) {
 
-        alert("Please enter your email.");
+        alert(
+            "Please enter your email."
+        );
 
         return;
     }
 
 
-    let user =
-        JSON.parse(
-            localStorage.getItem("earnhubUser") || "null"
-        );
+    let user = getUser();
 
 
     if (!user) {
@@ -89,59 +179,58 @@ function login(e) {
         user = {
 
             name:
-                email.split("@")[0],
+                email
+                    .split("@")[0],
 
-            email:
-                email,
+            email: email,
 
             balance: 250,
 
             taskEarnings: 0,
 
-            createdAt:
-                new Date().toLocaleString()
+            referralEarnings: 0,
+
+            adEarnings: 0
 
         };
 
 
-        localStorage.setItem(
-            "earnhubUser",
-            JSON.stringify(user)
-        );
+        saveUser(user);
 
     }
 
 
     window.location.href =
         "dashboard.html";
+
 }
 
 
-
-// ==================================================
-// LOGOUT
-// ==================================================
+/* ==================================================
+   LOGOUT
+   ================================================== */
 
 function logout() {
 
     window.location.href =
         "index.html";
+
 }
 
 
-
-// ==================================================
-// REFERRAL
-// ==================================================
+/* ==================================================
+   REFERRAL
+   ================================================== */
 
 function copyRef() {
 
-    const code = "ABC123";
+    const code =
+        "ABC123";
 
 
     if (
         navigator.clipboard &&
-        window.isSecureContext
+        navigator.clipboard.writeText
     ) {
 
         navigator.clipboard
@@ -157,7 +246,7 @@ function copyRef() {
             .catch(function () {
 
                 alert(
-                    "Referral code: " +
+                    "Your referral code is: " +
                     code
                 );
 
@@ -166,30 +255,30 @@ function copyRef() {
     } else {
 
         alert(
-            "Referral code: " +
+            "Your referral code is: " +
             code
         );
 
     }
+
 }
 
 
-
-// ==================================================
-// WITHDRAW
-// ==================================================
+/* ==================================================
+   WITHDRAW
+   ================================================== */
 
 function withdraw() {
 
     const user =
-        JSON.parse(
-            localStorage.getItem("earnhubUser") || "null"
-        );
+        getUser();
 
 
     if (!user) {
 
-        alert("Please login first.");
+        alert(
+            "Please login first."
+        );
 
         return;
     }
@@ -205,7 +294,9 @@ function withdraw() {
 
     if (!amount || amount <= 0) {
 
-        alert("Enter a valid amount.");
+        alert(
+            "Enter a valid amount."
+        );
 
         return;
     }
@@ -217,19 +308,28 @@ function withdraw() {
 
     if (amount > balance) {
 
-        alert("Insufficient balance.");
+        alert(
+            "Insufficient balance."
+        );
 
         return;
     }
 
 
     const upi =
-        prompt("Enter your UPI ID:");
+        prompt(
+            "Enter your UPI ID:"
+        );
 
 
-    if (!upi || !upi.includes("@")) {
+    if (
+        !upi ||
+        !upi.includes("@")
+    ) {
 
-        alert("Please enter a valid UPI ID.");
+        alert(
+            "Please enter a valid UPI ID."
+        );
 
         return;
     }
@@ -239,33 +339,50 @@ function withdraw() {
         balance - amount;
 
 
-    localStorage.setItem(
-        "earnhubUser",
-        JSON.stringify(user)
-    );
+    saveUser(user);
+
+
+    const withdrawal = {
+
+        amount: amount,
+
+        upi: upi,
+
+        status: "Pending",
+
+        date:
+            new Date()
+                .toLocaleString()
+
+    };
 
 
     localStorage.setItem(
         "lastWithdrawal",
-
-        JSON.stringify({
-
-            amount: amount,
-
-            upi: upi,
-
-            status: "Pending",
-
-            date:
-                new Date().toLocaleString()
-
-        })
+        JSON.stringify(withdrawal)
     );
+
+
+    addActivity({
+
+        type: "withdrawal",
+
+        title:
+            "Withdrawal request",
+
+        amount:
+            -amount,
+
+        date:
+            new Date()
+                .toLocaleString()
+
+    });
 
 
     alert(
 
-        "Withdrawal request submitted successfully!\n\n" +
+        "Withdrawal request submitted!\n\n" +
 
         "Amount: ₹" +
         amount +
@@ -279,59 +396,13 @@ function withdraw() {
 
 
     location.reload();
+
 }
 
 
-
-// ==================================================
-// TASK DATA
-// ==================================================
-
-const earnHubTasks = [
-
-    {
-        id: 1,
-
-        title: "📱 Install an app",
-
-        reward: 10,
-
-        description:
-            "Install the specified app and complete the required activity."
-
-    },
-
-    {
-        id: 2,
-
-        title: "▶️ Watch a video",
-
-        reward: 5,
-
-        description:
-            "Watch the assigned video completely."
-
-    },
-
-    {
-        id: 3,
-
-        title: "📝 Complete a survey",
-
-        reward: 15,
-
-        description:
-            "Complete the assigned survey."
-
-    }
-
-];
-
-
-
-// ==================================================
-// GET TASK DATA
-// ==================================================
+/* ==================================================
+   TASK DATA
+   ================================================== */
 
 function getTaskData() {
 
@@ -346,11 +417,6 @@ function getTaskData() {
 }
 
 
-
-// ==================================================
-// SAVE TASK DATA
-// ==================================================
-
 function saveTaskData(data) {
 
     localStorage.setItem(
@@ -364,30 +430,27 @@ function saveTaskData(data) {
 }
 
 
-
-// ==================================================
-// START TASK
-// ==================================================
+/* ==================================================
+   START TASK
+   ================================================== */
 
 function startTask(taskId) {
-
 
     const task =
         earnHubTasks.find(
 
-            function (t) {
-
-                return t.id ===
-                    Number(taskId);
-
-            }
+            t =>
+                t.id ===
+                Number(taskId)
 
         );
 
 
     if (!task) {
 
-        alert("Task not found.");
+        alert(
+            "Task not found."
+        );
 
         return;
     }
@@ -403,7 +466,8 @@ function startTask(taskId) {
 
     if (
         current &&
-        current.status === "Pending"
+        current.status ===
+        "Pending"
     ) {
 
         alert(
@@ -416,11 +480,12 @@ function startTask(taskId) {
 
     if (
         current &&
-        current.status === "Approved"
+        current.status ===
+        "Approved"
     ) {
 
         alert(
-            "You have already completed this task."
+            "This task has already been completed."
         );
 
         return;
@@ -432,7 +497,8 @@ function startTask(taskId) {
         status: "Started",
 
         startedAt:
-            new Date().toLocaleString(),
+            new Date()
+                .toLocaleString(),
 
         reward:
             task.reward,
@@ -450,41 +516,39 @@ function startTask(taskId) {
 
         task.title +
 
-        "\n\nTask started!" +
+        "\n\nTask started!\n\n" +
 
-        "\n\nComplete the task and then submit it."
+        "Complete the task and then submit it."
 
     );
 
 
     renderTasks();
+
 }
 
 
-
-// ==================================================
-// SUBMIT TASK
-// ==================================================
+/* ==================================================
+   SUBMIT TASK
+   ================================================== */
 
 function submitTask(taskId) {
-
 
     const task =
         earnHubTasks.find(
 
-            function (t) {
-
-                return t.id ===
-                    Number(taskId);
-
-            }
+            t =>
+                t.id ===
+                Number(taskId)
 
         );
 
 
     if (!task) {
 
-        alert("Task not found.");
+        alert(
+            "Task not found."
+        );
 
         return;
     }
@@ -496,7 +560,8 @@ function submitTask(taskId) {
 
     if (
         !data[taskId] ||
-        data[taskId].status !== "Started"
+        data[taskId].status !==
+        "Started"
     ) {
 
         alert(
@@ -512,15 +577,8 @@ function submitTask(taskId) {
 
 
     data[taskId].submittedAt =
-        new Date().toLocaleString();
-
-
-    data[taskId].reward =
-        task.reward;
-
-
-    data[taskId].title =
-        task.title;
+        new Date()
+            .toLocaleString();
 
 
     saveTaskData(data);
@@ -539,16 +597,163 @@ function submitTask(taskId) {
 
 
     renderTasks();
+
 }
 
 
+/* ==================================================
+   ADMIN - APPROVE TASK
+   ================================================== */
 
-// ==================================================
-// DISPLAY TASKS
-// ==================================================
+function approveTask(taskId) {
+
+    const task =
+        earnHubTasks.find(
+
+            t =>
+                t.id ===
+                Number(taskId)
+
+        );
+
+
+    if (!task) {
+        return;
+    }
+
+
+    const data =
+        getTaskData();
+
+
+    if (
+        !data[taskId] ||
+        data[taskId].status !==
+        "Pending"
+    ) {
+
+        alert(
+            "This task is not pending."
+        );
+
+        return;
+    }
+
+
+    data[taskId].status =
+        "Approved";
+
+
+    data[taskId].approvedAt =
+        new Date()
+            .toLocaleString();
+
+
+    saveTaskData(data);
+
+
+    const user =
+        getUser();
+
+
+    if (user) {
+
+        user.balance =
+            Number(user.balance || 0)
+            + task.reward;
+
+
+        user.taskEarnings =
+            Number(user.taskEarnings || 0)
+            + task.reward;
+
+
+        saveUser(user);
+
+    }
+
+
+    addActivity({
+
+        type: "task",
+
+        title:
+            "Task reward: " +
+            task.title,
+
+        amount:
+            task.reward,
+
+        date:
+            new Date()
+                .toLocaleString()
+
+    });
+
+
+    alert(
+        "Task approved!\n₹" +
+        task.reward +
+        " added to the balance."
+    );
+
+
+    renderAdmin();
+
+}
+
+
+/* ==================================================
+   ADMIN - REJECT TASK
+   ================================================== */
+
+function rejectTask(taskId) {
+
+    const data =
+        getTaskData();
+
+
+    if (
+        !data[taskId] ||
+        data[taskId].status !==
+        "Pending"
+    ) {
+
+        alert(
+            "This task is not pending."
+        );
+
+        return;
+    }
+
+
+    data[taskId].status =
+        "Rejected";
+
+
+    data[taskId].rejectedAt =
+        new Date()
+            .toLocaleString();
+
+
+    saveTaskData(data);
+
+
+    alert(
+        "Task rejected."
+    );
+
+
+    renderAdmin();
+
+}
+
+
+/* ==================================================
+   RENDER TASKS
+   ================================================== */
 
 function renderTasks() {
-
 
     const container =
         document.getElementById(
@@ -556,158 +761,158 @@ function renderTasks() {
         );
 
 
-    if (!container) return;
+    if (!container) {
+        return;
+    }
+
+
+    const countElement =
+        document.getElementById(
+            "taskCount"
+        );
 
 
     const data =
         getTaskData();
 
 
-    container.innerHTML = "";
+    container.innerHTML =
+        "";
+
+
+    if (countElement) {
+
+        countElement.textContent =
+            earnHubTasks.length;
+
+    }
 
 
     earnHubTasks.forEach(
-
-        function (task) {
-
+        function(task) {
 
             const taskData =
                 data[task.id];
 
 
-            let button = "";
+            let statusClass =
+                "available";
 
+            let statusText =
+                "Available";
 
-            let status = "";
+            let buttonHTML =
+                `
+                <button
+                    class="task-btn"
+                    onclick="startTask(${task.id})">
 
+                    Start Task
 
-            if (!taskData) {
-
-
-                button = `
-
-                    <button
-                        onclick="startTask(${task.id})">
-
-                        Start Task
-
-                    </button>
-
+                </button>
                 `;
 
 
-            }
-
-            else if (
+            if (
+                taskData &&
                 taskData.status ===
                 "Started"
             ) {
 
+                statusClass =
+                    "started";
 
-                status = `
+                statusText =
+                    "Started";
 
-                    <div class="task-status started">
-                        ▶ Task in progress
-                    </div>
-
-                `;
-
-
-                button = `
-
+                buttonHTML =
+                    `
                     <button
+                        class="task-btn"
                         onclick="submitTask(${task.id})">
 
                         Submit Task
 
                     </button>
-
-                `;
-
+                    `;
 
             }
 
-            else if (
+
+            if (
+                taskData &&
                 taskData.status ===
                 "Pending"
             ) {
 
+                statusClass =
+                    "pending";
 
-                status = `
+                statusText =
+                    "Pending Approval";
 
-                    <div class="task-status pending">
-                        ⏳ Waiting for approval
-                    </div>
-
-                `;
-
-
-                button = `
-
-                    <button disabled>
+                buttonHTML =
+                    `
+                    <button
+                        class="task-btn"
+                        disabled>
 
                         ⏳ Pending Approval
 
                     </button>
-
-                `;
-
+                    `;
 
             }
 
-            else if (
+
+            if (
+                taskData &&
                 taskData.status ===
                 "Approved"
             ) {
 
+                statusClass =
+                    "approved";
 
-                status = `
+                statusText =
+                    "Approved";
 
-                    <div class="task-status approved">
-                        ✓ Reward approved
-                    </div>
-
-                `;
-
-
-                button = `
-
-                    <button disabled>
+                buttonHTML =
+                    `
+                    <button
+                        class="task-btn"
+                        disabled>
 
                         ✓ Completed
 
                     </button>
-
-                `;
-
+                    `;
 
             }
 
-            else if (
+
+            if (
+                taskData &&
                 taskData.status ===
                 "Rejected"
             ) {
 
+                statusClass =
+                    "rejected";
 
-                status = `
+                statusText =
+                    "Rejected";
 
-                    <div class="task-status rejected">
-                        ✕ Submission rejected
-                    </div>
-
-                `;
-
-
-                button = `
-
+                buttonHTML =
+                    `
                     <button
+                        class="task-btn"
                         onclick="startTask(${task.id})">
 
                         Try Again
 
                     </button>
-
-                `;
+                    `;
 
             }
 
@@ -718,29 +923,48 @@ function renderTasks() {
 
                     <div class="task-card-top">
 
-                        <div>
+                        <h2>
+                            ${task.title}
+                        </h2>
 
-                            <h2>
-                                ${task.title}
-                            </h2>
+                        <span
+                            class="task-status ${statusClass}">
 
-                            <p>
-                                ${task.description}
-                            </p>
+                            ${statusText}
 
-                        </div>
-
-                        <div class="reward">
-                            ₹${task.reward}
-                        </div>
+                        </span>
 
                     </div>
 
-                    ${status}
 
-                    <div class="task-button-area">
+                    <p>
+                        ${task.description}
+                    </p>
 
-                        ${button}
+
+                    <div class="task-bottom">
+
+                        <div>
+
+                            <span class="reward-label">
+                                Reward
+                            </span>
+
+                            <div
+                                class="task-reward">
+
+                                ₹${task.reward}
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            ${buttonHTML}
+
+                        </div>
 
                     </div>
 
@@ -749,74 +973,16 @@ function renderTasks() {
             `;
 
         }
-
     );
-
-
-    updateTaskCount();
 
 }
 
 
-
-// ==================================================
-// TASK COUNT
-// ==================================================
-
-function updateTaskCount() {
-
-
-    const element =
-        document.getElementById(
-            "taskCount"
-        );
-
-
-    if (!element) return;
-
-
-    const data =
-        getTaskData();
-
-
-    let available = 0;
-
-
-    earnHubTasks.forEach(
-
-        function (task) {
-
-            const item =
-                data[task.id];
-
-
-            if (
-                !item ||
-                item.status === "Rejected"
-            ) {
-
-                available++;
-
-            }
-
-        }
-
-    );
-
-
-    element.textContent =
-        available;
-
-}
-
-
-
-// ==================================================
-// ADMIN PANEL
-// ==================================================
+/* ==================================================
+   ADMIN RENDER
+   ================================================== */
 
 function renderAdmin() {
-
 
     const container =
         document.getElementById(
@@ -824,167 +990,46 @@ function renderAdmin() {
         );
 
 
-    if (!container) return;
+    if (!container) {
+        return;
+    }
 
 
     const data =
         getTaskData();
 
 
-    container.innerHTML = "";
+    const submissions =
+        earnHubTasks.filter(
+            function(task) {
 
+                return (
+                    data[task.id] &&
+                    (
+                        data[task.id].status ===
+                        "Pending" ||
 
-    let pending = 0;
+                        data[task.id].status ===
+                        "Approved" ||
 
-    let approved = 0;
-
-    let rejected = 0;
-
-
-    earnHubTasks.forEach(
-
-        function (task) {
-
-
-            const item =
-                data[task.id];
-
-
-            if (!item) return;
-
-
-            if (item.status === "Pending") {
-
-                pending++;
+                        data[task.id].status ===
+                        "Rejected"
+                    )
+                );
 
             }
+        );
 
 
-            if (item.status === "Approved") {
-
-                approved++;
-
-            }
-
-
-            if (item.status === "Rejected") {
-
-                rejected++;
-
-            }
-
-
-            container.innerHTML += `
-
-                <article class="admin-card">
-
-                    <h3>
-                        ${task.title}
-                    </h3>
-
-                    <p>
-                        <strong>Reward:</strong>
-                        ₹${task.reward}
-                    </p>
-
-                    <p>
-                        <strong>Status:</strong>
-                        ${item.status}
-                    </p>
-
-                    ${
-                        item.startedAt
-                        ?
-                        `<p>
-                            <strong>Started:</strong>
-                            ${item.startedAt}
-                        </p>`
-                        :
-                        ""
-                    }
-
-                    ${
-                        item.submittedAt
-                        ?
-                        `<p>
-                            <strong>Submitted:</strong>
-                            ${item.submittedAt}
-                        </p>`
-                        :
-                        ""
-                    }
-
-
-                    ${
-                        item.status === "Pending"
-
-                        ?
-
-                        `
-
-                        <div class="admin-actions">
-
-                            <button
-                                class="approve-btn"
-                                onclick="approveTask(${task.id})">
-
-                                ✓ Approve ₹${task.reward}
-
-                            </button>
-
-
-                            <button
-                                class="reject-btn"
-                                onclick="rejectTask(${task.id})">
-
-                                ✕ Reject
-
-                            </button>
-
-                        </div>
-
-                        `
-
-                        :
-
-                        `
-
-                        <span class="${
-                            item.status === "Approved"
-                            ?
-                            "status-approved"
-                            :
-                            "status-rejected"
-                        }">
-
-                            ${
-                                item.status === "Approved"
-                                ?
-                                "✓ Approved"
-                                :
-                                "✕ Rejected"
-                            }
-
-                        </span>
-
-                        `
-
-                    }
-
-                </article>
-
-            `;
-
-        }
-
-    );
-
-
-    if (container.innerHTML === "") {
+    if (submissions.length === 0) {
 
         container.innerHTML = `
 
             <div class="admin-empty">
+
+                <div class="admin-empty-icon">
+                    📋
+                </div>
 
                 <h3>
                     No submissions yet
@@ -998,209 +1043,182 @@ function renderAdmin() {
 
         `;
 
+        return;
     }
 
 
-    document.getElementById(
-        "pendingCount"
-    ).textContent = pending;
+    container.innerHTML =
+        "";
 
 
-    document.getElementById(
-        "approvedCount"
-    ).textContent = approved;
+    submissions.forEach(
+        function(task) {
+
+            const submission =
+                data[task.id];
 
 
-    document.getElementById(
-        "rejectedCount"
-    ).textContent = rejected;
-
-}
+            let statusHTML =
+                "";
 
 
-
-// ==================================================
-// APPROVE TASK
-// ==================================================
-
-function approveTask(taskId) {
+            let actionHTML =
+                "";
 
 
-    const data =
-        getTaskData();
+            if (
+                submission.status ===
+                "Pending"
+            ) {
+
+                statusHTML =
+                    `
+                    <span
+                        class="status-pending">
+
+                        ⏳ Pending Approval
+
+                    </span>
+                    `;
 
 
-    const task =
-        earnHubTasks.find(
+                actionHTML =
+                    `
+                    <div class="admin-actions">
 
-            function (t) {
+                        <button
+                            class="approve-btn"
+                            onclick="approveTask(${task.id})">
 
-                return t.id ===
-                    Number(taskId);
+                            ✓ Approve
+
+                        </button>
+
+
+                        <button
+                            class="reject-btn"
+                            onclick="rejectTask(${task.id})">
+
+                            ✕ Reject
+
+                        </button>
+
+                    </div>
+                    `;
 
             }
 
-        );
+
+            if (
+                submission.status ===
+                "Approved"
+            ) {
+
+                statusHTML =
+                    `
+                    <span
+                        class="status-approved">
+
+                        ✓ Approved
+
+                    </span>
+                    `;
+
+            }
 
 
-    if (!task) return;
+            if (
+                submission.status ===
+                "Rejected"
+            ) {
+
+                statusHTML =
+                    `
+                    <span
+                        class="status-rejected">
+
+                        ✕ Rejected
+
+                    </span>
+                    `;
+
+            }
 
 
-    if (
-        !data[taskId] ||
-        data[taskId].status !== "Pending"
-    ) {
+            container.innerHTML += `
 
-        alert(
-            "This task is not pending."
-        );
+                <article class="admin-card">
 
-        return;
-    }
+                    <div class="admin-card-header">
 
+                        <h3>
+                            ${task.title}
+                        </h3>
 
-    const user =
-        JSON.parse(
+                        <span
+                            class="admin-reward">
 
-            localStorage.getItem(
-                "earnhubUser"
-            ) || "null"
+                            ₹${task.reward}
 
-        );
+                        </span>
+
+                    </div>
 
 
-    if (!user) {
-
-        alert(
-            "No user account found."
-        );
-
-        return;
-    }
+                    <p>
+                        <strong>
+                            Description:
+                        </strong>
+                        ${task.description}
+                    </p>
 
 
-    user.balance =
-        Number(user.balance || 0) +
-        task.reward;
+                    <p>
+                        <strong>
+                            Started:
+                        </strong>
+                        ${
+                            submission.startedAt ||
+                            "Not available"
+                        }
+                    </p>
 
 
-    user.taskEarnings =
-        Number(user.taskEarnings || 0) +
-        task.reward;
+                    <p>
+                        <strong>
+                            Submitted:
+                        </strong>
+                        ${
+                            submission.submittedAt ||
+                            "Not available"
+                        }
+                    </p>
 
 
-    data[taskId].status =
-        "Approved";
+                    ${statusHTML}
 
+                    ${actionHTML}
 
-    data[taskId].approvedAt =
-        new Date().toLocaleString();
+                </article>
 
+            `;
 
-    saveTaskData(data);
-
-
-    localStorage.setItem(
-
-        "earnhubUser",
-
-        JSON.stringify(user)
-
+        }
     );
 
-
-    addActivity(
-
-        "📝 " +
-        task.title,
-
-        "+₹" + task.reward
-
-    );
-
-
-    alert(
-
-        "Task approved!\n\n" +
-
-        "₹" +
-        task.reward +
-        " added to the user's balance."
-
-    );
-
-
-    renderAdmin();
 }
 
 
-
-// ==================================================
-// REJECT TASK
-// ==================================================
-
-function rejectTask(taskId) {
-
-
-    const data =
-        getTaskData();
-
-
-    if (
-        !data[taskId] ||
-        data[taskId].status !== "Pending"
-    ) {
-
-        alert(
-            "This task is not pending."
-        );
-
-        return;
-    }
-
-
-    const reason =
-        prompt(
-            "Enter rejection reason:"
-        );
-
-
-    data[taskId].status =
-        "Rejected";
-
-
-    data[taskId].rejectedAt =
-        new Date().toLocaleString();
-
-
-    data[taskId].rejectionReason =
-        reason ||
-        "Submission did not meet the requirements.";
-
-
-    saveTaskData(data);
-
-
-    alert(
-        "Task rejected."
-    );
-
-
-    renderAdmin();
-}
-
-
-
-// ==================================================
-// ACTIVITY
-// ==================================================
+/* ==================================================
+   ACTIVITY SYSTEM
+   ================================================== */
 
 function getActivities() {
 
     return JSON.parse(
 
         localStorage.getItem(
-            "earnhubActivities"
+            "earnhubActivity"
         ) || "[]"
 
     );
@@ -1212,7 +1230,7 @@ function saveActivities(activities) {
 
     localStorage.setItem(
 
-        "earnhubActivities",
+        "earnhubActivity",
 
         JSON.stringify(activities)
 
@@ -1221,28 +1239,18 @@ function saveActivities(activities) {
 }
 
 
-function addActivity(title, amount) {
-
+function addActivity(activity) {
 
     const activities =
         getActivities();
 
 
-    activities.unshift({
-
-        title: title,
-
-        amount: amount,
-
-        date:
-            new Date().toLocaleString()
-
-    });
+    activities.unshift(activity);
 
 
-    if (activities.length > 10) {
+    if (activities.length > 20) {
 
-        activities.length = 10;
+        activities.length = 20;
 
     }
 
@@ -1252,170 +1260,25 @@ function addActivity(title, amount) {
 }
 
 
+/* ==================================================
+   RENDER ACTIVITY
+   ================================================== */
 
-// ==================================================
-// DISPLAY DASHBOARD DATA
-// ==================================================
-
-function loadDashboard() {
-
-
-    const user =
-        JSON.parse(
-
-            localStorage.getItem(
-                "earnhubUser"
-            ) || "null"
-
-        );
-
-
-    if (!user) return;
-
-
-    const userName =
-        document.getElementById(
-            "userName"
-        );
-
-
-    if (userName) {
-
-        userName.textContent =
-            user.name + " 👋";
-
-    }
-
-
-    const balance =
-        document.getElementById(
-            "balance"
-        );
-
-
-    if (balance) {
-
-        balance.textContent =
-            Number(
-                user.balance || 0
-            ).toFixed(0);
-
-    }
-
-
-    const taskEarnings =
-        document.getElementById(
-            "taskEarnings"
-        );
-
-
-    if (taskEarnings) {
-
-        taskEarnings.textContent =
-            "₹" +
-            Number(
-                user.taskEarnings || 0
-            ).toFixed(0);
-
-    }
-
-
-    const avatar =
-        document.getElementById(
-            "avatar"
-        );
-
-
-    if (avatar) {
-
-        avatar.textContent =
-            user.name
-                .charAt(0)
-                .toUpperCase();
-
-    }
-
-
-    renderActivities();
-
-}
-
-
-
-// ==================================================
-// RENDER ACTIVITIES
-// ==================================================
-
-function renderActivities() {
-
+function renderActivity() {
 
     const container =
         document.getElementById(
-            "activityList"
+            "recentActivity"
         );
 
 
-    if (!container) return;
+    if (!container) {
+        return;
+    }
 
 
     const activities =
         getActivities();
 
 
-    if (activities.length === 0) return;
-
-
-    container.innerHTML = "";
-
-
-    activities.forEach(
-
-        function (item) {
-
-            container.innerHTML += `
-
-                <div class="activity-row">
-
-                    <span>
-                        ${item.title}
-                    </span>
-
-                    <b>
-                        ${item.amount}
-                    </b>
-
-                </div>
-
-            `;
-
-        }
-
-    );
-
-}
-
-
-
-// ==================================================
-// PAGE LOAD
-// ==================================================
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    function () {
-
-
-        loadDashboard();
-
-
-        renderTasks();
-
-
-        renderAdmin();
-
-
-    }
-
-);
+    if (activiti
