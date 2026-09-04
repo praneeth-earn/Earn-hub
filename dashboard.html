@@ -27,8 +27,8 @@
 
 <main class="dashboard">
 
-
     <!-- WELCOME -->
+
     <div class="welcome">
 
         <div>
@@ -41,15 +41,15 @@
             </h1>
         </div>
 
-        <div class="avatar">
+        <div class="avatar" id="avatar">
             U
         </div>
 
     </div>
 
 
-
     <!-- BALANCE -->
+
     <section class="balance">
 
         <div>
@@ -79,18 +79,18 @@
     </section>
 
 
-
     <!-- STATS -->
+
     <section class="stats-grid">
 
         <div class="stat">
             <span>Today</span>
-            <b>₹35</b>
+            <b id="todayEarnings">₹35</b>
         </div>
 
         <div class="stat">
             <span>Task earnings</span>
-            <b>₹150</b>
+            <b id="taskEarnings">₹150</b>
         </div>
 
         <div class="stat">
@@ -106,17 +106,17 @@
     </section>
 
 
-
     <!-- EARN MORE -->
+
     <h2>
         Earn more
     </h2>
-
 
     <div class="grid cards">
 
 
         <!-- TASKS -->
+
         <article class="action-card">
 
             <div class="icon">
@@ -128,7 +128,7 @@
             </h3>
 
             <p>
-                5 tasks available
+                Complete tasks and earn rewards
             </p>
 
             <button
@@ -142,8 +142,8 @@
         </article>
 
 
-
         <!-- REFER -->
+
         <article class="action-card">
 
             <div class="icon">
@@ -160,7 +160,7 @@
 
             <div class="ref">
 
-                ABC123
+                <span>ABC123</span>
 
                 <button onclick="copyRef()">
                     Copy
@@ -171,8 +171,8 @@
         </article>
 
 
-
         <!-- ADS -->
+
         <article class="action-card">
 
             <div class="icon">
@@ -197,66 +197,43 @@
 
         </article>
 
-
     </div>
 
 
-
     <!-- RECENT ACTIVITY -->
+
     <section class="activity">
 
         <h2>
             Recent activity
         </h2>
 
+        <div id="activityList">
 
-        <div class="activity-row">
+            <div class="activity-row">
+                <span>📝 Task reward</span>
+                <b>+₹20</b>
+            </div>
 
-            <span>
-                📝 Task reward
-            </span>
+            <div class="activity-row">
+                <span>👥 Referral commission</span>
+                <b>+₹15</b>
+            </div>
 
-            <b>
-                +₹20
-            </b>
-
-        </div>
-
-
-        <div class="activity-row">
-
-            <span>
-                👥 Referral commission
-            </span>
-
-            <b>
-                +₹15
-            </b>
-
-        </div>
-
-
-        <div class="activity-row">
-
-            <span>
-                📺 Ad reward
-            </span>
-
-            <b>
-                +₹5
-            </b>
+            <div class="activity-row">
+                <span>📺 Ad reward</span>
+                <b>+₹5</b>
+            </div>
 
         </div>
 
     </section>
 
-
 </main>
-
 
 
 <script src="script.js"></script>
 
 </body>
 
-  </html>
+</html>
