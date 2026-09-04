@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,27 +12,120 @@
 
 <body>
 
-<header>
-    <h1>Earn<span>Hub</span></h1>
+<header class="task-nav">
 
-    <a href="dashboard.html">
-        Dashboard
+    <a href="dashboard.html" class="back-btn">
+        ← Dashboard
     </a>
+
+    <div class="logo">
+        Earn<span>Hub</span>
+    </div>
+
+    <div class="nav-spacer"></div>
+
 </header>
 
-<main>
 
-    <h2>Available Tasks</h2>
+<main class="tasks-page">
 
-    <p>
-        Complete tasks and submit them for approval.
-    </p>
+    <!-- PAGE HEADER -->
+    <section class="tasks-hero">
 
-    <div id="taskList"></div>
+        <div class="hero-icon">
+            📝
+        </div>
+
+        <div>
+            <h1>Available Tasks</h1>
+
+            <p>
+                Complete simple tasks and earn rewards.
+            </p>
+        </div>
+
+    </section>
+
+
+    <!-- INFORMATION -->
+    <section class="task-info">
+
+        <div class="info-item">
+            <span>📋</span>
+
+            <div>
+                <strong>Choose a task</strong>
+                <small>Select an available task below.</small>
+            </div>
+        </div>
+
+
+        <div class="info-item">
+            <span>⚡</span>
+
+            <div>
+                <strong>Complete it</strong>
+                <small>Follow the task instructions.</small>
+            </div>
+        </div>
+
+
+        <div class="info-item">
+            <span>💰</span>
+
+            <div>
+                <strong>Earn rewards</strong>
+                <small>Submit for approval after completion.</small>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- TASKS -->
+    <section>
+
+        <div class="section-title">
+
+            <div>
+                <h2>Tasks for you</h2>
+                <p>3 tasks currently available</p>
+            </div>
+
+            <span class="task-count">
+                3
+            </span>
+
+        </div>
+
+
+        <!-- script.js inserts the task cards here -->
+        <div id="taskList"></div>
+
+    </section>
+
+
+    <!-- FOOTER NOTE -->
+    <section class="task-note">
+
+        <span>🔒</span>
+
+        <div>
+            <strong>Rewards are reviewed</strong>
+
+            <p>
+                Submitted tasks are checked before rewards
+                are added to your balance.
+            </p>
+        </div>
+
+    </section>
 
 </main>
+
 
 <script src="script.js"></script>
 
 </body>
+
 </html>
