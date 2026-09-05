@@ -1,211 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>Tasks - EarnHub</title>
-
-    <link
-        rel="stylesheet"
-        href="style.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tasks - EarnHub</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 
 <body>
 
-
 <header class="task-nav">
-
-    <a
-        href="dashboard.html"
-        class="back-btn">
-
-        ← Dashboard
-
-    </a>
-
-
-    <div class="logo">
-
-        Earn<span>Hub</span>
-
-    </div>
-
-
-    <div class="nav-spacer"></div>
-
+  <h2>Earn<span>Hub</span></h2>
+  <a href="dashboard.html">Dashboard</a>
 </header>
 
-
-
 <main class="tasks-page">
-
-
-    <!-- HERO -->
-
-    <section class="tasks-hero">
-
-        <div class="hero-icon">
-            📝
-        </div>
-
-        <div>
-
-            <h1>
-                Available Tasks
-            </h1>
-
-            <p>
-                Complete tasks and submit them for approval.
-            </p>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- INFORMATION -->
-
-    <section class="task-info">
-
-        <div class="info-item">
-
-            <span>
-                💰
-            </span>
-
-            <div>
-
-                <strong>
-                    Earn rewards
-                </strong>
-
-                <small>
-                    Complete eligible tasks
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <div class="info-item">
-
-            <span>
-                ⏳
-            </span>
-
-            <div>
-
-                <strong>
-                    Approval
-                </strong>
-
-                <small>
-                    Rewards require approval
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <div class="info-item">
-
-            <span>
-                ✅
-            </span>
-
-            <div>
-
-                <strong>
-                    Track progress
-                </strong>
-
-                <small>
-                    Your task status is saved
-                </small>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- SECTION TITLE -->
-
-    <div class="section-title">
-
-        <div>
-
-            <h2>
-                Tasks
-            </h2>
-
-            <p>
-                Choose a task to get started
-            </p>
-
-        </div>
-
-        <div
-            class="task-count"
-            id="taskCount">
-
-            0
-
-        </div>
-
-    </div>
-
-
-
-    <!-- TASK LIST -->
-
-    <section id="taskList"></section>
-
-
-
-    <!-- NOTE -->
-
-    <section class="task-note">
-
-        <span>
-            ⚠️
-        </span>
-
-        <div>
-
-            <strong>
-                Important
-            </strong>
-
-            <p>
-                Complete the required activity before submitting.
-                Submitted tasks are reviewed before rewards are added
-                to your balance.
-            </p>
-
-        </div>
-
-    </section>
-
-
+  <h1>Available Tasks</h1>
+  <p>Complete tasks and earn rewards.</p>
+  <div id="taskList"></div>
 </main>
 
-
 <script src="script.js"></script>
-
 </body>
-
-    </html>
+</html>
