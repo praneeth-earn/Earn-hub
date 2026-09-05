@@ -1,268 +1,151 @@
-// ===============================
-// EARNHUB - SIMPLE SCRIPT
-// ===============================
-
-function getUser() {
-    return JSON.parse(localStorage.getItem("earnhubUser") || "null");
-}
-
-function saveUser(user) {
-    localStorage.setItem("earnhubUser", JSON.stringify(user));
-}
-
-
-// ===============================
-// SIGN UP
-// ===============================
-
-function signup(e) {
-    e.preventDefault();
-
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-
-    if (!name || !email) {
-        alert("Please enter name and email.");
-        return;
-    }
-
-    saveUser({
-        name: name,
-        email: email,
-        balance: 250
-    });
-
-    alert("Account created successfully!");
-    window.location.href = "dashboard.html";
-}
-
-
-// ===============================
-// LOGIN
-// ===============================
-
-function login(e) {
-    e.preventDefault();
-
-    const email = document.getElementById("loginEmail").value.trim();
-
-    if (!email) {
-        alert("Please enter your email.");
-        return;
-    }
-
-    let user = getUser();
-
-    // Create account automatically if none exists
-    if (!user) {
-        user = {
-            name: email.split("@")[0],
-            email: email,
-            balance: 250
-        };
-
-        saveUser(user);
-    }
-
-    // Update email if user logs in with another email
-    user.email = email;
-    saveUser(user);
-
-    window.location.href = "dashboard.html";
-}
-
-
-// ===============================
-// LOGOUT
-// ===============================
-
-function logout() {
-    window.location.href = "index.html";
-}
-
-
-// ===============================
-// REFERRAL
-// ===============================
-
-function copyRef() {
-    navigator.clipboard?.writeText("ABC123");
-    alert("Referral code: ABC123");
-}
-
-
-// ===============================
-// WITHDRAW
-// ===============================
-
-function withdraw() {
-    const user = getUser();
-
-    if (!user) {
-        alert("Please login first.");
-        return;
-    }
-
-    const amount = Number(prompt("Enter withdrawal amount:"));
-
-    if (!amount || amount <= 0) {
-        alert("Invalid amount.");
-        return;
-    }
-
-    if (amount > Number(user.balance || 0)) {
-        alert("Insufficient balance.");
-        return;
-    }
-
-    const upi = prompt("Enter UPI ID:");
-
-    if (!upi || !upi.includes("@")) {
-        alert("Invalid UPI ID.");
-        return;
-    }
-
-    user.balance -= amount;
-    saveUser(user);
-
-    localStorage.setItem("lastWithdrawal", JSON.stringify({
-        amount: amount,
-        upi: upi,
-        status: "Pending"
-    }));
-
-    alert("Withdrawal submitted!");
-    location.reload();
-}
-
-
-// ===============================
-// TASKS
-// ===============================
-
-const tasks = [
-    {
-        id: 1,
-        title: "📱 Install an app",
-        reward: 10,
-        description: "Install the specified app and complete the activity."
-    },
-    {
-        id: 2,
-        title: "▶️ Watch a video",
-        reward: 5,
-        description: "Watch the assigned video completely."
-    },
-    {
-        id: 3,
-        title: "📝 Complete a survey",
-        reward: 15,
-        description: "Complete the assigned survey."
-    }
+const tasks=[
+ {id:1,name:"Install an App",reward:10},
+ {id:2,name:"Watch a Video",reward:5},
+ {id:3,name:"Complete a Survey",reward:15}
 ];
 
-function getTasks() {
-    return JSON.parse(localStorage.getItem("earnhubTasks") || "{}");
+function user(){
+ return JSON.parse(localStorage.getItem("user"))||null;
 }
 
-function saveTasks(data) {
-    localStorage.setItem("earnhubTasks", JSON.stringify(data));
+function save(u){
+ localStorage.setItem("user",JSON.stringify(u));
 }
 
-function startTask(id) {
-    const data = getTasks();
-
-    data[id] = {
-        status: "Started",
-        time: new Date().toLocaleString()
-    };
-
-    saveTasks(data);
-    renderTasks();
-
-    alert("Task started. Complete it and submit.");
+function signup(e){
+ e.preventDefault();
+ let u={
+  name:document.getElementById("name").value,
+  email:document.getElementById("email").value,
+  balance:250,
+  taskEarnings:0
+ };
+ save(u);
+ location.href="dashboard.html";
 }
 
-function submitTask(id) {
-    const data = getTasks();
+function login(e){
+ e.preventDefault();
+ let email=document.getElementById("loginEmail").value;
+ let u=user();
 
-    if (!data[id] || data[id].status !== "Started") {
-        alert("Start the task first.");
-        return;
-    }
+ if(!u||u.email!==email){
+  u={name:"User",email:email,balance:250,taskEarnings:0};
+  save(u);
+ }
 
-    data[id].status = "Pending";
-    data[id].submitted = new Date().toLocaleString();
-
-    saveTasks(data);
-    renderTasks();
-
-    alert("Task submitted for approval.");
+ location.href="dashboard.html";
 }
 
-function renderTasks() {
-    const box = document.getElementById("taskList");
-
-    if (!box) return;
-
-    const data = getTasks();
-
-    box.innerHTML = tasks.map(task => {
-
-        const status = data[task.id]?.status || "Available";
-
-        let button;
-
-        if (status === "Available") {
-            button = `<button class="task-btn" onclick="startTask(${task.id})">Start Task</button>`;
-        } 
-        else if (status === "Started") {
-            button = `<button class="task-btn" onclick="submitTask(${task.id})">Submit Task</button>`;
-        } 
-        else {
-            button = `<button class="task-btn" disabled>⏳ ${status}</button>`;
-        }
-
-        return `
-            <div class="task-card">
-                <h2>${task.title}</h2>
-                <p>${task.description}</p>
-                <strong>₹${task.reward}</strong>
-                <br>
-                ${button}
-            </div>
-        `;
-    }).join("");
+function logout(){
+ localStorage.removeItem("user");
+ location.href="index.html";
 }
 
-
-// ===============================
-// DASHBOARD
-// ===============================
-
-function loadDashboard() {
-    const user = getUser();
-
-    if (!user) return;
-
-    const name = document.getElementById("userName");
-    const balance = document.getElementById("balance");
-
-    if (name) {
-        name.textContent = user.name + " 👋";
-    }
-
-    if (balance) {
-        balance.textContent = Number(user.balance || 0);
-    }
+function startTask(id){
+ let data=JSON.parse(localStorage.getItem("tasks")||"{}");
+ data[id]="started";
+ localStorage.setItem("tasks",JSON.stringify(data));
+ renderTasks();
 }
 
+function submitTask(id){
+ let data=JSON.parse(localStorage.getItem("tasks")||"{}");
+ data[id]="pending";
+ localStorage.setItem("tasks",JSON.stringify(data));
+ alert("Task submitted for approval.");
+ renderTasks();
+}
 
-// ===============================
-// PAGE LOAD
-// ===============================
+function renderTasks(){
+ let box=document.getElementById("taskList");
+ if(!box)return;
 
-document.addEventListener("DOMContentLoaded", function () {
-    loadDashboard();
-    renderTasks();
+ let data=JSON.parse(localStorage.getItem("tasks")||"{}");
+
+ box.innerHTML=tasks.map(t=>{
+  let s=data[t.id]||"new";
+  let button="";
+
+  if(s==="new")
+   button=`<button onclick="startTask(${t.id})">Start Task</button>`;
+
+  if(s==="started")
+   button=`<button onclick="submitTask(${t.id})">Submit Task</button>`;
+
+  if(s==="pending")
+   button="<button disabled>Pending</button>";
+
+  if(s==="approved")
+   button="<button disabled>Approved ✓</button>";
+
+  if(s==="rejected")
+   button=`<button onclick="startTask(${t.id})">Try Again</button>`;
+
+  return `
+   <div class="task-card">
+    <h3>${t.name}</h3>
+    <p>Reward: ₹${t.reward}</p>
+    ${button}
+   </div>`;
+ }).join("");
+}
+
+function approveTask(id){
+ let data=JSON.parse(localStorage.getItem("tasks")||"{}");
+ let t=tasks.find(x=>x.id==id);
+ let u=user();
+
+ if(!t||!u)return;
+
+ data[id]="approved";
+ u.balance=(u.balance||0)+t.reward;
+ u.taskEarnings=(u.taskEarnings||0)+t.reward;
+
+ save(u);
+ localStorage.setItem("tasks",JSON.stringify(data));
+ renderAdmin();
+}
+
+function rejectTask(id){
+ let data=JSON.parse(localStorage.getItem("tasks")||"{}");
+ data[id]="rejected";
+ localStorage.setItem("tasks",JSON.stringify(data));
+ renderAdmin();
+}
+
+function renderAdmin(){
+ let box=document.getElementById("adminSubmissions");
+ if(!box)return;
+
+ let data=JSON.parse(localStorage.getItem("tasks")||"{}");
+
+ box.innerHTML=tasks.map(t=>{
+  let s=data[t.id]||"new";
+
+  if(s!=="pending")return "";
+
+  return `
+   <div class="task-card">
+    <h3>${t.name}</h3>
+    <p>Reward: ₹${t.reward}</p>
+    <button onclick="approveTask(${t.id})">Approve</button>
+    <button onclick="rejectTask(${t.id})">Reject</button>
+   </div>`;
+ }).join("")||"<p>No pending submissions.</p>";
+}
+
+function loadDashboard(){
+ let u=user();
+ let name=document.getElementById("userName");
+ let balance=document.getElementById("balance");
+
+ if(u&&name)name.textContent=u.name+" 👋";
+ if(u&&balance)balance.textContent=u.balance;
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+ loadDashboard();
+ renderTasks();
+ renderAdmin();
 });
