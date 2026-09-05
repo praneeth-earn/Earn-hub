@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Withdraw - EarnHub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="task-nav">
+  <h2>Earn<span>Hub</span></h2>
+  <a href="dashboard.html">Dashboard</a>
+</header>
+
+<main class="tasks-page">
+  <h1>Withdraw Money</h1>
+
+  <p>Balance: ₹<b id="balance">0</b></p>
+
+  <form onsubmit="withdraw(event)">
+    <input id="amount" type="number" placeholder="Amount" min="1" required>
+    <input id="upi" type="text" placeholder="UPI ID" required>
+    <button type="submit">Request Withdrawal</button>
+  </form>
+
+  <p id="withdrawStatus"></p>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
