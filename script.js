@@ -11,33 +11,24 @@ const earnHubTasks = [
 
     {
         id: 1,
-
         title: "📱 Install an app",
-
         reward: 10,
-
         description:
             "Install the specified app and complete the required activity."
     },
 
     {
         id: 2,
-
         title: "▶️ Watch a video",
-
         reward: 5,
-
         description:
             "Watch the assigned video completely."
     },
 
     {
         id: 3,
-
         title: "📝 Complete a survey",
-
         reward: 15,
-
         description:
             "Complete the assigned survey."
     }
@@ -46,14 +37,22 @@ const earnHubTasks = [
 
 
 /* ==================================================
-   USER
+   USER STORAGE
    ================================================== */
 
 function getUser() {
 
-    return JSON.parse(
-        localStorage.getItem("earnhubUser") || "null"
-    );
+    try {
+
+        return JSON.parse(
+            localStorage.getItem("earnhubUser") || "null"
+        );
+
+    } catch (error) {
+
+        return null;
+
+    }
 
 }
 
@@ -74,7 +73,10 @@ function saveUser(user) {
 
 function signup(e) {
 
-    e.preventDefault();
+    if (e) {
+        e.preventDefault();
+    }
+
 
     const nameElement =
         document.getElementById("name");
@@ -82,9 +84,16 @@ function signup(e) {
     const emailElement =
         document.getElementById("email");
 
+    const passwordElement =
+        document.getElementById("password");
+
 
     if (!nameElement || !emailElement) {
-        return;
+
+        alert("Signup form could not be found.");
+
+        return false;
+
     }
 
 
@@ -92,16 +101,52 @@ function signup(e) {
         nameElement.value.trim();
 
     const email =
-        emailElement.value.trim();
+        emailElement.value.trim().toLowerCase();
+
+    const password =
+        passwordElement
+            ? passwordElement.value
+            : "";
 
 
-    if (!name || !email) {
+    if (!name) {
+
+        alert("Please enter your name.");
+
+        return false;
+
+    }
+
+
+    if (!email) {
+
+        alert("Please enter your email.");
+
+        return false;
+
+    }
+
+
+    if (!email.includes("@")) {
+
+        alert("Please enter a valid email address.");
+
+        return false;
+
+    }
+
+
+    if (
+        passwordElement &&
+        password.length < 6
+    ) {
 
         alert(
-            "Please enter your name and email."
+            "Password must be at least 6 characters."
         );
 
-        return;
+        return false;
+
     }
 
 
@@ -111,6 +156,8 @@ function signup(e) {
 
         email: email,
 
+        password: password,
+
         balance: 250,
 
         taskEarnings: 0,
@@ -118,6 +165,9 @@ function signup(e) {
         referralEarnings: 0,
 
         adEarnings: 0,
+
+        referralCode:
+            generateReferralCode(),
 
         createdAt:
             new Date().toLocaleString()
@@ -136,6 +186,24 @@ function signup(e) {
     window.location.href =
         "dashboard.html";
 
+
+    return false;
+
+}
+
+
+/* ==================================================
+   GENERATE REFERRAL CODE
+   ================================================== */
+
+function generateReferralCode() {
+
+    return "EH" +
+        Math.random()
+            .toString(36)
+            .substring(2, 8)
+            .toUpperCase();
+
 }
 
 
@@ -145,21 +213,44 @@ function signup(e) {
 
 function login(e) {
 
-    e.preventDefault();
+    if (e) {
+        e.preventDefault();
+    }
 
 
     const emailElement =
         document.getElementById("loginEmail");
 
 
+    const passwordElement =
+        document.getElementById("loginPassword") ||
+        document.getElementById("password");
+
+
     if (!emailElement) {
-        return;
+
+        alert(
+            "Login form could not be found."
+        );
+
+        return false;
+
     }
 
 
     const email =
-        emailElement.value.trim();
+        emailElement.value.trim().toLowerCase();
 
+
+    const password =
+        passwordElement
+            ? passwordElement.value
+            : "";
+
+
+    /* ----------------------------------------------
+       CHECK EMAIL
+       ---------------------------------------------- */
 
     if (!email) {
 
@@ -167,41 +258,156 @@ function login(e) {
             "Please enter your email."
         );
 
-        return;
+        emailElement.focus();
+
+        return false;
+
     }
 
 
-    let user = getUser();
+    if (!email.includes("@")) {
 
+        alert(
+            "Please enter a valid email address."
+        );
+
+        emailElement.focus();
+
+        return false;
+
+    }
+
+
+    /* ----------------------------------------------
+       GET SAVED USER
+       ---------------------------------------------- */
+
+    let user =
+        getUser();
+
+
+    /* ----------------------------------------------
+       NO ACCOUNT YET
+       ---------------------------------------------- */
 
     if (!user) {
 
-        user = {
+        alert(
+            "No account found.\n\n" +
+            "Please create an account first."
+        );
 
-            name:
-                email
-                    .split("@")[0],
+        window.location.href =
+            "signup.html";
 
-            email: email,
-
-            balance: 250,
-
-            taskEarnings: 0,
-
-            referralEarnings: 0,
-
-            adEarnings: 0
-
-        };
-
-
-        saveUser(user);
+        return false;
 
     }
+
+
+    /* ----------------------------------------------
+       CHECK EMAIL
+       ---------------------------------------------- */
+
+    if (
+        user.email &&
+        user.email.toLowerCase() !== email
+    ) {
+
+        alert(
+            "Email does not match the registered account."
+        );
+
+        return false;
+
+    }
+
+
+    /* ----------------------------------------------
+       CHECK PASSWORD
+       ---------------------------------------------- */
+
+    if (user.password) {
+
+        if (!password) {
+
+            alert(
+                "Please enter your password."
+            );
+
+            if (passwordElement) {
+                passwordElement.focus();
+            }
+
+            return false;
+
+        }
+
+
+        if (user.password !== password) {
+
+            alert(
+                "Incorrect password."
+            );
+
+            if (passwordElement) {
+                passwordElement.focus();
+            }
+
+            return false;
+
+        }
+
+    }
+
+
+    /* ----------------------------------------------
+       MAKE SURE OLD ACCOUNTS HAVE ALL FIELDS
+       ---------------------------------------------- */
+
+    user.name =
+        user.name ||
+        email.split("@")[0];
+
+    user.email =
+        user.email ||
+        email;
+
+    user.balance =
+        Number(user.balance || 0);
+
+    user.taskEarnings =
+        Number(user.taskEarnings || 0);
+
+    user.referralEarnings =
+        Number(user.referralEarnings || 0);
+
+    user.adEarnings =
+        Number(user.adEarnings || 0);
+
+    user.referralCode =
+        user.referralCode ||
+        generateReferralCode();
+
+
+    saveUser(user);
+
+
+    /* ----------------------------------------------
+       LOGIN SUCCESS
+       ---------------------------------------------- */
+
+    localStorage.setItem(
+        "earnhubLoggedIn",
+        "true"
+    );
 
 
     window.location.href =
         "dashboard.html";
+
+
+    return false;
 
 }
 
@@ -212,6 +418,10 @@ function login(e) {
 
 function logout() {
 
+    localStorage.removeItem(
+        "earnhubLoggedIn"
+    );
+
     window.location.href =
         "index.html";
 
@@ -219,13 +429,34 @@ function logout() {
 
 
 /* ==================================================
-   REFERRAL
+   REFERRAL CODE
    ================================================== */
+
+function getReferralCode() {
+
+    const user =
+        getUser();
+
+
+    if (
+        user &&
+        user.referralCode
+    ) {
+
+        return user.referralCode;
+
+    }
+
+
+    return "ABC123";
+
+}
+
 
 function copyRef() {
 
     const code =
-        "ABC123";
+        getReferralCode();
 
 
     if (
@@ -238,7 +469,7 @@ function copyRef() {
             .then(function () {
 
                 alert(
-                    "Referral code copied: " +
+                    "Referral code copied:\n\n" +
                     code
                 );
 
@@ -246,7 +477,7 @@ function copyRef() {
             .catch(function () {
 
                 alert(
-                    "Your referral code is: " +
+                    "Your referral code is:\n\n" +
                     code
                 );
 
@@ -255,7 +486,7 @@ function copyRef() {
     } else {
 
         alert(
-            "Your referral code is: " +
+            "Your referral code is:\n\n" +
             code
         );
 
@@ -280,25 +511,44 @@ function withdraw() {
             "Please login first."
         );
 
+        window.location.href =
+            "login.html";
+
         return;
+
+    }
+
+
+    const amountInput =
+        prompt(
+            "Enter withdrawal amount (₹):"
+        );
+
+
+    if (
+        amountInput === null
+    ) {
+
+        return;
+
     }
 
 
     const amount =
-        Number(
-            prompt(
-                "Enter withdrawal amount (₹):"
-            )
-        );
+        Number(amountInput);
 
 
-    if (!amount || amount <= 0) {
+    if (
+        !Number.isFinite(amount) ||
+        amount <= 0
+    ) {
 
         alert(
             "Enter a valid amount."
         );
 
         return;
+
     }
 
 
@@ -306,979 +556,4 @@ function withdraw() {
         Number(user.balance || 0);
 
 
-    if (amount > balance) {
-
-        alert(
-            "Insufficient balance."
-        );
-
-        return;
-    }
-
-
-    const upi =
-        prompt(
-            "Enter your UPI ID:"
-        );
-
-
-    if (
-        !upi ||
-        !upi.includes("@")
-    ) {
-
-        alert(
-            "Please enter a valid UPI ID."
-        );
-
-        return;
-    }
-
-
-    user.balance =
-        balance - amount;
-
-
-    saveUser(user);
-
-
-    const withdrawal = {
-
-        amount: amount,
-
-        upi: upi,
-
-        status: "Pending",
-
-        date:
-            new Date()
-                .toLocaleString()
-
-    };
-
-
-    localStorage.setItem(
-        "lastWithdrawal",
-        JSON.stringify(withdrawal)
-    );
-
-
-    addActivity({
-
-        type: "withdrawal",
-
-        title:
-            "Withdrawal request",
-
-        amount:
-            -amount,
-
-        date:
-            new Date()
-                .toLocaleString()
-
-    });
-
-
-    alert(
-
-        "Withdrawal request submitted!\n\n" +
-
-        "Amount: ₹" +
-        amount +
-
-        "\nUPI: " +
-        upi +
-
-        "\nStatus: Pending"
-
-    );
-
-
-    location.reload();
-
-}
-
-
-/* ==================================================
-   TASK DATA
-   ================================================== */
-
-function getTaskData() {
-
-    return JSON.parse(
-
-        localStorage.getItem(
-            "earnhubTasks"
-        ) || "{}"
-
-    );
-
-}
-
-
-function saveTaskData(data) {
-
-    localStorage.setItem(
-
-        "earnhubTasks",
-
-        JSON.stringify(data)
-
-    );
-
-}
-
-
-/* ==================================================
-   START TASK
-   ================================================== */
-
-function startTask(taskId) {
-
-    const task =
-        earnHubTasks.find(
-
-            t =>
-                t.id ===
-                Number(taskId)
-
-        );
-
-
-    if (!task) {
-
-        alert(
-            "Task not found."
-        );
-
-        return;
-    }
-
-
-    const data =
-        getTaskData();
-
-
-    const current =
-        data[taskId];
-
-
-    if (
-        current &&
-        current.status ===
-        "Pending"
-    ) {
-
-        alert(
-            "This task is already pending approval."
-        );
-
-        return;
-    }
-
-
-    if (
-        current &&
-        current.status ===
-        "Approved"
-    ) {
-
-        alert(
-            "This task has already been completed."
-        );
-
-        return;
-    }
-
-
-    data[taskId] = {
-
-        status: "Started",
-
-        startedAt:
-            new Date()
-                .toLocaleString(),
-
-        reward:
-            task.reward,
-
-        title:
-            task.title
-
-    };
-
-
-    saveTaskData(data);
-
-
-    alert(
-
-        task.title +
-
-        "\n\nTask started!\n\n" +
-
-        "Complete the task and then submit it."
-
-    );
-
-
-    renderTasks();
-
-}
-
-
-/* ==================================================
-   SUBMIT TASK
-   ================================================== */
-
-function submitTask(taskId) {
-
-    const task =
-        earnHubTasks.find(
-
-            t =>
-                t.id ===
-                Number(taskId)
-
-        );
-
-
-    if (!task) {
-
-        alert(
-            "Task not found."
-        );
-
-        return;
-    }
-
-
-    const data =
-        getTaskData();
-
-
-    if (
-        !data[taskId] ||
-        data[taskId].status !==
-        "Started"
-    ) {
-
-        alert(
-            "Please start the task first."
-        );
-
-        return;
-    }
-
-
-    data[taskId].status =
-        "Pending";
-
-
-    data[taskId].submittedAt =
-        new Date()
-            .toLocaleString();
-
-
-    saveTaskData(data);
-
-
-    alert(
-
-        "Task submitted successfully!\n\n" +
-
-        "Reward: ₹" +
-        task.reward +
-
-        "\nStatus: Pending Approval"
-
-    );
-
-
-    renderTasks();
-
-}
-
-
-/* ==================================================
-   ADMIN - APPROVE TASK
-   ================================================== */
-
-function approveTask(taskId) {
-
-    const task =
-        earnHubTasks.find(
-
-            t =>
-                t.id ===
-                Number(taskId)
-
-        );
-
-
-    if (!task) {
-        return;
-    }
-
-
-    const data =
-        getTaskData();
-
-
-    if (
-        !data[taskId] ||
-        data[taskId].status !==
-        "Pending"
-    ) {
-
-        alert(
-            "This task is not pending."
-        );
-
-        return;
-    }
-
-
-    data[taskId].status =
-        "Approved";
-
-
-    data[taskId].approvedAt =
-        new Date()
-            .toLocaleString();
-
-
-    saveTaskData(data);
-
-
-    const user =
-        getUser();
-
-
-    if (user) {
-
-        user.balance =
-            Number(user.balance || 0)
-            + task.reward;
-
-
-        user.taskEarnings =
-            Number(user.taskEarnings || 0)
-            + task.reward;
-
-
-        saveUser(user);
-
-    }
-
-
-    addActivity({
-
-        type: "task",
-
-        title:
-            "Task reward: " +
-            task.title,
-
-        amount:
-            task.reward,
-
-        date:
-            new Date()
-                .toLocaleString()
-
-    });
-
-
-    alert(
-        "Task approved!\n₹" +
-        task.reward +
-        " added to the balance."
-    );
-
-
-    renderAdmin();
-
-}
-
-
-/* ==================================================
-   ADMIN - REJECT TASK
-   ================================================== */
-
-function rejectTask(taskId) {
-
-    const data =
-        getTaskData();
-
-
-    if (
-        !data[taskId] ||
-        data[taskId].status !==
-        "Pending"
-    ) {
-
-        alert(
-            "This task is not pending."
-        );
-
-        return;
-    }
-
-
-    data[taskId].status =
-        "Rejected";
-
-
-    data[taskId].rejectedAt =
-        new Date()
-            .toLocaleString();
-
-
-    saveTaskData(data);
-
-
-    alert(
-        "Task rejected."
-    );
-
-
-    renderAdmin();
-
-}
-
-
-/* ==================================================
-   RENDER TASKS
-   ================================================== */
-
-function renderTasks() {
-
-    const container =
-        document.getElementById(
-            "taskList"
-        );
-
-
-    if (!container) {
-        return;
-    }
-
-
-    const countElement =
-        document.getElementById(
-            "taskCount"
-        );
-
-
-    const data =
-        getTaskData();
-
-
-    container.innerHTML =
-        "";
-
-
-    if (countElement) {
-
-        countElement.textContent =
-            earnHubTasks.length;
-
-    }
-
-
-    earnHubTasks.forEach(
-        function(task) {
-
-            const taskData =
-                data[task.id];
-
-
-            let statusClass =
-                "available";
-
-            let statusText =
-                "Available";
-
-            let buttonHTML =
-                `
-                <button
-                    class="task-btn"
-                    onclick="startTask(${task.id})">
-
-                    Start Task
-
-                </button>
-                `;
-
-
-            if (
-                taskData &&
-                taskData.status ===
-                "Started"
-            ) {
-
-                statusClass =
-                    "started";
-
-                statusText =
-                    "Started";
-
-                buttonHTML =
-                    `
-                    <button
-                        class="task-btn"
-                        onclick="submitTask(${task.id})">
-
-                        Submit Task
-
-                    </button>
-                    `;
-
-            }
-
-
-            if (
-                taskData &&
-                taskData.status ===
-                "Pending"
-            ) {
-
-                statusClass =
-                    "pending";
-
-                statusText =
-                    "Pending Approval";
-
-                buttonHTML =
-                    `
-                    <button
-                        class="task-btn"
-                        disabled>
-
-                        ⏳ Pending Approval
-
-                    </button>
-                    `;
-
-            }
-
-
-            if (
-                taskData &&
-                taskData.status ===
-                "Approved"
-            ) {
-
-                statusClass =
-                    "approved";
-
-                statusText =
-                    "Approved";
-
-                buttonHTML =
-                    `
-                    <button
-                        class="task-btn"
-                        disabled>
-
-                        ✓ Completed
-
-                    </button>
-                    `;
-
-            }
-
-
-            if (
-                taskData &&
-                taskData.status ===
-                "Rejected"
-            ) {
-
-                statusClass =
-                    "rejected";
-
-                statusText =
-                    "Rejected";
-
-                buttonHTML =
-                    `
-                    <button
-                        class="task-btn"
-                        onclick="startTask(${task.id})">
-
-                        Try Again
-
-                    </button>
-                    `;
-
-            }
-
-
-            container.innerHTML += `
-
-                <article class="task-card">
-
-                    <div class="task-card-top">
-
-                        <h2>
-                            ${task.title}
-                        </h2>
-
-                        <span
-                            class="task-status ${statusClass}">
-
-                            ${statusText}
-
-                        </span>
-
-                    </div>
-
-
-                    <p>
-                        ${task.description}
-                    </p>
-
-
-                    <div class="task-bottom">
-
-                        <div>
-
-                            <span class="reward-label">
-                                Reward
-                            </span>
-
-                            <div
-                                class="task-reward">
-
-                                ₹${task.reward}
-
-                            </div>
-
-                        </div>
-
-
-                        <div>
-
-                            ${buttonHTML}
-
-                        </div>
-
-                    </div>
-
-                </article>
-
-            `;
-
-        }
-    );
-
-}
-
-
-/* ==================================================
-   ADMIN RENDER
-   ================================================== */
-
-function renderAdmin() {
-
-    const container =
-        document.getElementById(
-            "adminSubmissions"
-        );
-
-
-    if (!container) {
-        return;
-    }
-
-
-    const data =
-        getTaskData();
-
-
-    const submissions =
-        earnHubTasks.filter(
-            function(task) {
-
-                return (
-                    data[task.id] &&
-                    (
-                        data[task.id].status ===
-                        "Pending" ||
-
-                        data[task.id].status ===
-                        "Approved" ||
-
-                        data[task.id].status ===
-                        "Rejected"
-                    )
-                );
-
-            }
-        );
-
-
-    if (submissions.length === 0) {
-
-        container.innerHTML = `
-
-            <div class="admin-empty">
-
-                <div class="admin-empty-icon">
-                    📋
-                </div>
-
-                <h3>
-                    No submissions yet
-                </h3>
-
-                <p>
-                    Submitted tasks will appear here.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-    }
-
-
-    container.innerHTML =
-        "";
-
-
-    submissions.forEach(
-        function(task) {
-
-            const submission =
-                data[task.id];
-
-
-            let statusHTML =
-                "";
-
-
-            let actionHTML =
-                "";
-
-
-            if (
-                submission.status ===
-                "Pending"
-            ) {
-
-                statusHTML =
-                    `
-                    <span
-                        class="status-pending">
-
-                        ⏳ Pending Approval
-
-                    </span>
-                    `;
-
-
-                actionHTML =
-                    `
-                    <div class="admin-actions">
-
-                        <button
-                            class="approve-btn"
-                            onclick="approveTask(${task.id})">
-
-                            ✓ Approve
-
-                        </button>
-
-
-                        <button
-                            class="reject-btn"
-                            onclick="rejectTask(${task.id})">
-
-                            ✕ Reject
-
-                        </button>
-
-                    </div>
-                    `;
-
-            }
-
-
-            if (
-                submission.status ===
-                "Approved"
-            ) {
-
-                statusHTML =
-                    `
-                    <span
-                        class="status-approved">
-
-                        ✓ Approved
-
-                    </span>
-                    `;
-
-            }
-
-
-            if (
-                submission.status ===
-                "Rejected"
-            ) {
-
-                statusHTML =
-                    `
-                    <span
-                        class="status-rejected">
-
-                        ✕ Rejected
-
-                    </span>
-                    `;
-
-            }
-
-
-            container.innerHTML += `
-
-                <article class="admin-card">
-
-                    <div class="admin-card-header">
-
-                        <h3>
-                            ${task.title}
-                        </h3>
-
-                        <span
-                            class="admin-reward">
-
-                            ₹${task.reward}
-
-                        </span>
-
-                    </div>
-
-
-                    <p>
-                        <strong>
-                            Description:
-                        </strong>
-                        ${task.description}
-                    </p>
-
-
-                    <p>
-                        <strong>
-                            Started:
-                        </strong>
-                        ${
-                            submission.startedAt ||
-                            "Not available"
-                        }
-                    </p>
-
-
-                    <p>
-                        <strong>
-                            Submitted:
-                        </strong>
-                        ${
-                            submission.submittedAt ||
-                            "Not available"
-                        }
-                    </p>
-
-
-                    ${statusHTML}
-
-                    ${actionHTML}
-
-                </article>
-
-            `;
-
-        }
-    );
-
-}
-
-
-/* ==================================================
-   ACTIVITY SYSTEM
-   ================================================== */
-
-function getActivities() {
-
-    return JSON.parse(
-
-        localStorage.getItem(
-            "earnhubActivity"
-        ) || "[]"
-
-    );
-
-}
-
-
-function saveActivities(activities) {
-
-    localStorage.setItem(
-
-        "earnhubActivity",
-
-        JSON.stringify(activities)
-
-    );
-
-}
-
-
-function addActivity(activity) {
-
-    const activities =
-        getActivities();
-
-
-    activities.unshift(activity);
-
-
-    if (activities.length > 20) {
-
-        activities.length = 20;
-
-    }
-
-
-    saveActivities(activities);
-
-}
-
-
-/* ==================================================
-   RENDER ACTIVITY
-   ================================================== */
-
-function renderActivity() {
-
-    const container =
-        document.getElementById(
-            "recentActivity"
-        );
-
-
-    if (!container) {
-        return;
-    }
-
-
-    const activities =
-        getActivities();
-
-
-    if (activiti
+    if (amount > balance)
