@@ -1,93 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>Admin - EarnHub</title>
-
-    <link
-        rel="stylesheet"
-        href="style.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin - EarnHub</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 
 <body>
 
-
 <header class="task-nav">
-
-    <a
-        href="dashboard.html"
-        class="back-btn">
-
-        ← Dashboard
-
-    </a>
-
-
-    <div class="logo">
-
-        Earn<span>Hub</span>
-
-    </div>
-
-
-    <div class="nav-spacer"></div>
-
+  <h2>Earn<span>Hub</span> Admin</h2>
+  <a href="dashboard.html">Dashboard</a>
 </header>
 
-
-
 <main class="tasks-page">
-
-
-    <!-- ADMIN HEADER -->
-
-    <section class="admin-header">
-
-        <h2>
-            Admin Panel
-        </h2>
-
-        <p>
-            Review user task submissions and approve or reject them.
-        </p>
-
-    </section>
-
-
-
-    <!-- ADMIN SUBMISSIONS -->
-
-    <section id="adminSubmissions">
-
-        <div class="admin-empty">
-
-            <div class="admin-empty-icon">
-                📋
-            </div>
-
-            <h3>
-                Loading submissions...
-            </h3>
-
-        </div>
-
-    </section>
-
-
+  <h1>Task Submissions</h1>
+  <div id="adminSubmissions"></div>
 </main>
 
-
 <script src="script.js"></script>
-
 </body>
-
 </html>
