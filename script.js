@@ -1,151 +1,93 @@
-const tasks=[
- {id:1,name:"Install an App",reward:10},
- {id:2,name:"Watch a Video",reward:5},
- {id:3,name:"Complete a Survey",reward:15}
-];
+function withdraw(e){
+  e.preventDefault();
 
-function user(){
- return JSON.parse(localStorage.getItem("user"))||null;
-}
+  let u=user();
+  let amount=Number(document.getElementById("amount").value);
+  let upi=document.getElementById("upi").value.trim();
 
-function save(u){
- localStorage.setItem("user",JSON.stringify(u));
-}
+  if(!u)return alert("Please login first.");
+  if(amount<=0)return alert("Enter a valid amount.");
+  if(amount>u.balance)return alert("Insufficient balance.");
+  if(!upi.includes("@"))return alert("Enter a valid UPI ID.");
 
-function signup(e){
- e.preventDefault();
- let u={
-  name:document.getElementById("name").value,
-  email:document.getElementById("email").value,
-  balance:250,
-  taskEarnings:0
- };
- save(u);
- location.href="dashboard.html";
-}
+  let requests=JSON.parse(localStorage.getItem("withdrawals")||"[]");
 
-function login(e){
- e.preventDefault();
- let email=document.getElementById("loginEmail").value;
- let u=user();
+  requests.push({
+    id:Date.now(),
+    email:u.email,
+    amount:amount,
+    upi:upi,
+    status:"pending"
+  });
 
- if(!u||u.email!==email){
-  u={name:"User",email:email,balance:250,taskEarnings:0};
+  u.balance-=amount;
   save(u);
- }
 
- location.href="dashboard.html";
+  localStorage.setItem("withdrawals",JSON.stringify(requests));
+
+  document.getElementById("withdrawStatus").textContent=
+    "Withdrawal request submitted.";
+
+  document.getElementById("amount").value="";
+  document.getElementById("upi").value="";
+  loadDashboard();
 }
 
-function logout(){
- localStorage.removeItem("user");
- location.href="index.html";
+function renderWithdrawals(){
+  let box=document.getElementById("withdrawals");
+  if(!box)return;
+
+  let requests=JSON.parse(localStorage.getItem("withdrawals")||"[]");
+
+  box.innerHTML=requests.map(r=>`
+    <div class="task-card">
+      <p>Email: ${r.email}</p>
+      <p>Amount: ₹${r.amount}</p>
+      <p>UPI: ${r.upi}</p>
+      <b>${r.status}</b>
+      ${r.status==="pending"?`
+        <button onclick="approveWithdrawal(${r.id})">Approve</button>
+        <button onclick="rejectWithdrawal(${r.id})">Reject</button>
+      `:""}
+    </div>
+  `).join("")||"<p>No withdrawal requests.</p>";
 }
 
-function startTask(id){
- let data=JSON.parse(localStorage.getItem("tasks")||"{}");
- data[id]="started";
- localStorage.setItem("tasks",JSON.stringify(data));
- renderTasks();
+function approveWithdrawal(id){
+  let r=JSON.parse(localStorage.getItem("withdrawals")||"[]");
+  let x=r.find(a=>a.id===id);
+
+  if(x)x.status="approved";
+
+  localStorage.setItem("withdrawals",JSON.stringify(r));
+  renderWithdrawals();
 }
 
-function submitTask(id){
- let data=JSON.parse(localStorage.getItem("tasks")||"{}");
- data[id]="pending";
- localStorage.setItem("tasks",JSON.stringify(data));
- alert("Task submitted for approval.");
- renderTasks();
-}
+function rejectWithdrawal(id){
+  let r=JSON.parse(localStorage.getItem("withdrawals")||"[]");
+  let x=r.find(a=>a.id===id);
 
-function renderTasks(){
- let box=document.getElementById("taskList");
- if(!box)return;
+  if(x){
+    x.status="rejected";
 
- let data=JSON.parse(localStorage.getItem("tasks")||"{}");
+    let u=user();
+    if(u && u.email===x.email){
+      u.balance+=x.amount;
+      save(u);
+    }
+  }
 
- box.innerHTML=tasks.map(t=>{
-  let s=data[t.id]||"new";
-  let button="";
-
-  if(s==="new")
-   button=`<button onclick="startTask(${t.id})">Start Task</button>`;
-
-  if(s==="started")
-   button=`<button onclick="submitTask(${t.id})">Submit Task</button>`;
-
-  if(s==="pending")
-   button="<button disabled>Pending</button>";
-
-  if(s==="approved")
-   button="<button disabled>Approved ✓</button>";
-
-  if(s==="rejected")
-   button=`<button onclick="startTask(${t.id})">Try Again</button>`;
-
-  return `
-   <div class="task-card">
-    <h3>${t.name}</h3>
-    <p>Reward: ₹${t.reward}</p>
-    ${button}
-   </div>`;
- }).join("");
-}
-
-function approveTask(id){
- let data=JSON.parse(localStorage.getItem("tasks")||"{}");
- let t=tasks.find(x=>x.id==id);
- let u=user();
-
- if(!t||!u)return;
-
- data[id]="approved";
- u.balance=(u.balance||0)+t.reward;
- u.taskEarnings=(u.taskEarnings||0)+t.reward;
-
- save(u);
- localStorage.setItem("tasks",JSON.stringify(data));
- renderAdmin();
-}
-
-function rejectTask(id){
- let data=JSON.parse(localStorage.getItem("tasks")||"{}");
- data[id]="rejected";
- localStorage.setItem("tasks",JSON.stringify(data));
- renderAdmin();
-}
-
-function renderAdmin(){
- let box=document.getElementById("adminSubmissions");
- if(!box)return;
-
- let data=JSON.parse(localStorage.getItem("tasks")||"{}");
-
- box.innerHTML=tasks.map(t=>{
-  let s=data[t.id]||"new";
-
-  if(s!=="pending")return "";
-
-  return `
-   <div class="task-card">
-    <h3>${t.name}</h3>
-    <p>Reward: ₹${t.reward}</p>
-    <button onclick="approveTask(${t.id})">Approve</button>
-    <button onclick="rejectTask(${t.id})">Reject</button>
-   </div>`;
- }).join("")||"<p>No pending submissions.</p>";
-}
-
-function loadDashboard(){
- let u=user();
- let name=document.getElementById("userName");
- let balance=document.getElementById("balance");
-
- if(u&&name)name.textContent=u.name+" 👋";
- if(u&&balance)balance.textContent=u.balance;
+  localStorage.setItem("withdrawals",JSON.stringify(r));
+  renderWithdrawals();
 }
 
 document.addEventListener("DOMContentLoaded",()=>{
- loadDashboard();
- renderTasks();
- renderAdmin();
+  loadDashboard();
+  renderTasks();
+  renderAdmin();
+  renderWithdrawals();
+
+  let b=document.getElementById("balance");
+  let u=user();
+  if(b&&u)b.textContent=u.balance;
 });
